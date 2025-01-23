@@ -1,0 +1,35 @@
+{
+    "name": "lift-project",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.mypy-type-checker",
+                "ms-python.flake8",
+                "ms-python.black-formatter"
+            ],
+
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.formatting.provider": "black",
+                "editor.formatOnSave": true,
+                "python.linting.mypyEnabled": true
+            }
+        }
+    },
+
+    "postCreateCommand": "pip install --upgrade pip setuptools wheel",
+    "remoteUser": "vscode",
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+    ],
+    "containerEnv": {
+        "PYTHONPATH": "/workspace"
+    }
+}
