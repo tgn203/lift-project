@@ -19,7 +19,14 @@
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
                 "python.formatting.provider": "black",
                 "editor.formatOnSave": true,
-                "python.linting.mypyEnabled": true
+                "python.linting.mypyEnabled": true,
+
+                "remote.SSH.defaultForwardedPorts": [
+                    {
+                        "name": "Flask web server",
+                        "remotePort": 8080
+                    }
+                ]
             }
         }
     },
