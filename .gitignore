@@ -1,3 +1,7 @@
 # VS Code settings
 .vscode/
 *.code-workspace
+
+# Python caches
+__pycache__/
+.mypy_cache/

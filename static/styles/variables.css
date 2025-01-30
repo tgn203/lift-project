@@ -1,0 +1,12 @@
+/* Import JetBrains Mono font */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300&family=Montserrat:ital@0;1&display=swap');
+
+:root {
+    /* Set global colour variables */
+    --bg-dark: #1a1a1a;
+    --accent-dark: #2a2a2a;
+    --selected-dark: #3a3a3a;
+    --text-dark: #cccccc;
+    --colour-accent: #277727;
+    --colour-accent-bright: color-mix(in srgb, var(--colour-accent) 90%, lightgray 10%);
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Metadata setup -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>Lift Simulator</title>
+        
+        <!-- Import CSS -->
+        <link href="{{ url_for('static', filename='styles/style.css') }} " rel="stylesheet">
+        <link href="{{ url_for('static', filename='styles/config.css') }} " rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- Title banner -->
+        <div class="banner">
+            <h1 class="title">Lift Algorithm Simulator</h1>
+            <button id="gh-button" onclick="openGithub()">
+                <img src="{{ url_for('static', filename='images/github_dark.svg') }}" alt="GitHub logo">
+            </button>
+        </div>
+
+        <div id="main" class="centers-items">
+            <form id="configForm" class="centers-items">
+                <!-- Use Flask to automatically fill config items -->
+                {% for k, v in config_options.items(): %}
+                    <div class="form-group">
+                        <label for="{{ k + 'Input' }}">
+                            <p class="literal-name">{{ k }}:</p>
+                            <p class="pretty-name">{{ v[1] }}:</p>
+                        </label>
+                        <input type="{{ v[0] }}" id="{{ k + 'Input' }}" value="{{ v[2] }}">
+                    </div>
+                {% endfor %}
+        
+                <input type="submit" value="Submit">
+
+                <!-- Checkbox to toggle literal variable names on/off -->
+                <div class="form-group">
+                    <label for="toggleCheckbox">Toggle literal config names:</label>
+                    <input type="checkbox" id="toggleCheckbox" onclick="toggleLiteralNames()">
+                </div>
+            </form>
+        </div>
+    </body>
+
+    <!-- Import scripts -->
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/config.js') }}"></script>
+</html>

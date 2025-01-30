@@ -1,0 +1,97 @@
+/* Import colour variables and font */
+@import url('variables.css');
+
+/* ===== FORM ===== */
+form {
+    /* Made into its own block to stand out */
+    width: 50vw;
+    height: 60vh;
+
+    flex-direction: column;     /* Stack different input horizontally */
+
+    background-color: var(--accent-dark);
+    border-radius: 30px;
+}
+
+.form-group {
+    /* Flexboxes to position inputs with their labels */
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+input {
+    /* Applies to all types of input */
+    height: 3vh;
+    width: 10vw;
+    margin-left: 20px;
+    padding: 5px;
+
+    border: none;
+    background-color: var(--selected-dark);
+    border-radius: 5px;
+}
+
+/* ===== CUSTOMIZED INPUTS ===== */
+input[type="submit"] {
+    /* Make submit buttons green */
+    background-color: var(--colour-accent);
+    border: 2px solid var(--colour-accent-bright);
+    margin-bottom: 2vh;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    /* Change to lighter colour on hover */
+    background-color: var(--colour-accent-bright);
+}
+
+input[type="checkbox"] {
+    /* Custom checkbox styling */
+    width: 2.5vh;
+    height: 2.5vh;
+
+    /* Hide the default checkbox */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    background-color: var(--selected-dark);
+    cursor: pointer;
+
+    /* Smoothly change background colour */
+    transition: all .1s ease-in-out;
+}
+
+input[type="checkbox"]:checked {
+    /* Change to green fill when checked */
+    background-color: var(--colour-accent);
+    border: 2px solid var(--colour-accent-bright);
+}
+
+input[type=number] {
+    /* Remove spinner buttons on number inputs */
+    /* Firefox */
+    -moz-appearance: textfield;
+    appearance: textfield;
+
+    /* Chromium */
+    ::-webkit-inner-spin-button,
+    ::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+/* ===== TOGGLING LABELS ===== */
+.literal-name {
+    /* 'Code font' text label */
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.5em;
+    display: none;      /* Start hidden by default */
+}
+
+.pretty-name{
+    /* Basic text label */
+    font-size: 1.75em;
+}
