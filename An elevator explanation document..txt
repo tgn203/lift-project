@@ -1,0 +1,71 @@
+An elevator explanation document.
+
+This first section will try to explain how the elevator in theory should function in terms of how it determines which direction to prioritise, and what to give priority to.
+
+The first part explains the order of priority 
+The second part explains when the elevator opens or doesn't open a floor
+Third part explains how to use
+Fourth part explains what I believe my algorithm currently achieves
+Fifth part explains what I plan to implement
+
+The order of priority:
+1. People on the elevator wanting to travel in the same direction the elevator's already going
+
+2. People on the elevator wanting to travel against the direction the elevator's currently going.
+
+3. People off the elevator and calling the elevator
+
+In the case of two conflicting directions that both have the same priority, then the shortest distance is favoured. If both distances are equal then the distance travelling downwards would be favoured, however this can be changed.
+
+This is based off the idea that once you're on the elevator, you don't expect to be dragged around due to other people that called the elevator, if you were to call an elevator with the down button, you wouldn't expect to go up.
+
+The reason the elevator prioritises the direction it is already travelling is to stop a risk of the elevator ever getting stuck anywhere, imagine the elevator switching between floor 2 and 3 indefinitely - if the elevator only prioritised the closest floor then anybody wanting to get to a further floor would end up stuck.
+
+
+When the elevator stops at a floor:
+
+If someone on the elevator has chosen to leave at a certain floor, the elevator will stop at that floor.
+
+If someone waiting at the floor has called the elevator in a certain direction that matches the current direction of the elevator.
+
+The reason the elevator doesn't open its doors if someone wants to go in the opposite direction is because they would end up stuck on the elevator until it reaches its final destination and changes directions, at which point the elevator could've picked the person up on the way back instead.
+
+
+How to try out the code in the python file:
+
+Comment out the earlier two while True loops as the newest code is at the third
+
+backupQueue is currently a redundant part of the coding that I had originally planned as a way to prioritise wait times but ended up becoming irrelevant, it's easiest to just leave this empty.
+
+queuedFloors contains a list of the floors chosen by people on the elevator. Modify this list to change the floors initially chosen by people on the elevator, emptying it will start the elevator at 0 people.
+
+currentFloor is the floor the elevator is currently on, changing the value will change the value the elevator starts at.
+
+calledUp is the list of floors where someone has called the elevator with the intention to go up
+
+calledDown is the list of floors where someone has called the elevator with the intention to go down
+
+
+
+What this currently achieves:
+This algorithm prioritises request based on direction of travel, proximity to the call, and whether someone's waiting on or off the elevator.
+
+There is currently no priority for wait times because it was made redundant by the introduction of direction of travel priority - also I expect the direction of travel priority to inadvertently help to prioritise longer wait times however I'm unable to test this yet.
+
+
+What I want to add:
+Capacity limits is the most important for me and will be added in my next version
+
+Time taken is semi-added in already as the code has the elevator travel through each floor, however adding a more proper way of measuring the time is my intention.
+
+I hope to add a multiple elevator scenario if it works, however I'd probably only start working on that once I have capacity limits sorted
+
+
+
+
+
+
+
+
+
+
