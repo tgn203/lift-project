@@ -1,9 +1,9 @@
 flowchart TD
     A["Was the prior move up?"]
-    B["Is there a higher floor than the current floor in the queued floors?"]
+    B["Is there a higher floor than<br> the current floor in the<br> queued floors?"]
     C["Return true"]
     D["Return false"]
-    E["Is there a lower floor than the current floor in the queued floors?"]
+    E["Is there a lower floor than<br> the current floor in the<br> queued floors?"]
     A -->|yes| B
     A -->|no| E
     B -->|yes| C
