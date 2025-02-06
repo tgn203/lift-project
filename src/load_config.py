@@ -92,3 +92,17 @@ def convert_config_txt_to_dict(text: str) -> dict[str, str]:
             config["requests"][int(split[0])] = requests
 
     return config
+
+
+def write_config_to_json(config: dict, filepath: str) -> None:
+    # Convert the config dict to a JSON object
+    json_config = json.dumps(config)
+
+    # Attempt to open and write the file
+    try:
+        with open(filepath, "w", encoding="utf8") as file:
+            file.write(str(json_config))
+            file.close()
+    # Generic error handling
+    except Exception as e:
+        raise Exception(f"An error occurred: \n\t{e}")
