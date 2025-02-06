@@ -1,6 +1,6 @@
 # Elevator Simulator
 
-This project simulates an elevator system that moves up and down, transporting passengers between floors. The default configuration includes 10 floors and 1 elevator, but users can specify the number of floors and elevators through a configuration file.
+This project simulates an elevator system that moves up and down, transporting passengers between floors. Users can specify the number of floors and elevators through a configuration file that can be generated.
 
 ## Project Structure
 
@@ -11,6 +11,8 @@ elevator-simulator
 │   ├── elevator.py      # Elevator class for managing movement and passengers
 │   ├── building.py      # Building class for managing floors and elevators
 │   ├── passenger.py     # Passenger class representing individuals in the system
+│   ├── Script Generator
+│   │   └── generator.py # Generates scripts to be used for the simulation
 │   ├── config
 │   │   └── settings.py  # Configuration settings for the simulation
 │   └── algorithms
