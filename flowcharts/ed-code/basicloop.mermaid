@@ -1,0 +1,21 @@
+flowchart TD
+    A["Call floor check"]
+    B["Did floor check return true?"]
+    C["Remove current floors from queued floors"]
+    E["Print current floor"]
+    F["Call pathing"]
+    G["What did pathing return?"] 
+    H["Increment the current floor"]
+    I["Decrement the current floor"]
+    J["End"]
+    A --> B
+    B -->|yes| C
+    C --> E
+    E --> F
+    B -->|no| F
+    F --> G
+    G -->|up| H
+    G -->|down| I
+    H -->|stop| J
+    H --> A
+    I --> A

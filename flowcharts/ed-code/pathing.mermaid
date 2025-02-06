@@ -1,0 +1,26 @@
+flowchart TD
+    A["Set floor to first floor in queued floors"]
+    B["Is there another floor in queued floors not yet gone through?"]
+    L["Select next floor from queued floors"]
+    C["Is the floor selected from queued floors greater than the current floor?"]
+    D["Set checkup to true"]
+    E["Is the floor selected from queued floors less than the current floor?"]
+    F["Set checkdown to true"]
+    G["Is checkup false and checkdown false?"]
+    H["Return stop"]
+    I["Is checkdown true?"]
+    J["Return down"]
+    K["Return up"]
+    A --> B
+    B -->|yes| L
+    L --> C
+    C -->|yes| D
+    C -->|no| E
+    E -->|yes| F
+    D --> G
+    E -->|no| G
+    F --> G
+    G -->|yes| H
+    G -->|no| I
+    I -->|yes| J
+    I -->|no| K
