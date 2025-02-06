@@ -94,14 +94,37 @@ def convert_config_txt_to_dict(text: str) -> dict[str, str]:
     return config
 
 
-def write_config_to_json(config: dict, filepath: str) -> None:
-    # Convert the config dict to a JSON object
-    json_config = json.dumps(config)
+def write_config_to_file(config: dict, filepath: str) -> None:
+    # Check if the file is a `.json` or `.txt` file
+    extension = filepath.split(".")[-1]
+    if extension not in ["json", "txt"]:
+        raise NotImplementedError("Config file must be of type JSON or TXT.")
+
+    if extension == "json":
+        # Convert the config dict to a JSON object
+        config_text = str(json.dumps(config))
+
+    else:
+        # Convert to text form
+        lines = ["# Number of Floors, Capacity"]
+
+        # Add line for floor number and capacity config
+        lines.append(f"{config["num_floors"]}, {config["capacity"]}")
+        lines.append("")
+
+        # Add line for each floor config
+        lines.append("# Floor Requests")
+        for floor, requests in config["requests"].items():
+            # Convert floor numbers to strs
+            requests = [str(_) for _ in requests]
+            lines.append(f"{floor}: {", ".join(requests)}".strip())
+
+        config_text = "\n".join(lines)
 
     # Attempt to open and write the file
     try:
         with open(filepath, "w", encoding="utf8") as file:
-            file.write(str(json_config))
+            file.write(config_text)
             file.close()
     # Generic error handling
     except Exception as e:
