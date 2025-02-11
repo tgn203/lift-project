@@ -1,18 +1,18 @@
 flowchart TD
     A["Set floor to first floor in queued floors"]
-    B["Is there another floor in queued floors not yet gone through?"]
-    L["Select next floor from queued floors"]
-    C["Is the floor selected from queued floors greater than the current floor?"]
+    B["Is there another floor in<br> queued floors not yet gone<br> through?"]
+    L["Select next floor from<br> queued floors"]
+    C["Is the floor selected from<br> queued floors greater than<br> the current floor?"]
     D["Set checkup to true"]
-    E["Is the floor selected from queued floors less than the current floor?"]
+    E["Is the floor selected from<br> queued floors less than the<br> current floor?"]
     F["Set checkdown to true"]
-    G["Is checkup false and checkdown false?"]
+    G["Is checkup false and<br> checkdown false?"]
     H["Return stop"]
     I["Is checkdown false?"]
     J["Return down"]
     K["Return up"]
     M["Is checkup false?"]
-    N["Is the furtherst floor up shorter than the furthest floor down?"]
+    N["Is the furtherst floor up<br> shorter than the furthest<br> floor down?"]
     A --> B
     B -->|yes| L
     L --> C
