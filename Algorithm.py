@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[13]:
 
 
 def floorCheck(currentFloor, queuedFloors): # a simple check to see if the current floor is inside a list
@@ -12,7 +12,7 @@ def floorCheck(currentFloor, queuedFloors): # a simple check to see if the curre
     
 
 
-# In[2]:
+# In[14]:
 
 
 def pathing(currentFloor, queuedFloors): # compares the longest distance the elevator has to travel up, and the longest distance down, and chooses the shorter distance to travel in
@@ -47,7 +47,7 @@ def pathing(currentFloor, queuedFloors): # compares the longest distance the ele
     
 
 
-# In[3]:
+# In[15]:
 
 
 def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its destination from the original list this checks if it should keep going
@@ -64,7 +64,7 @@ def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its 
     
 
 
-# In[4]:
+# In[20]:
 
 
 def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the elevator has no one on it but there are people calling it
@@ -112,13 +112,13 @@ def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the
     
 
 
-# In[5]:
+# In[21]:
 
 
 # next one: fixing the issue when passengers want to go to the same floor by replacing instances of .remove with .pop
 
 
-# In[24]:
+# In[22]:
 
 
 floorLimits: list = [-5, 5]
@@ -151,14 +151,13 @@ for i in requestDict.keys():
         else:
             calledUp.append(i)
 
-hardCapacity: int = 2
+hardCapacity: int = 20
 softCapacity: int = hardCapacity/2
 weightCount: int = 0
 
-backupQueue = [] # this is currently redundant and I intend on getting rid of everything related to it soon if I can't find any reason to keep it
 
 
-# In[25]:
+# In[23]:
 
 
 prior: str = "none"
@@ -166,7 +165,6 @@ direction: str = "none"
 while True:
     reset = False
     stopHere = floorCheck(currentFloor, queuedFloors) # checks if there any floors to stop at
-    stopHerebackup = floorCheck(currentFloor, backupQueue)
     stopHereup = floorCheck(currentFloor, calledUp)
     stopHeredown = floorCheck(currentFloor,calledDown)
 
@@ -196,7 +194,7 @@ while True:
     
         
     
-    if stopHere == True or stopHerebackup == True: # opens to let people off the elevator, but can't stop people from getting on if there are any
+    if stopHere == True: # opens to let people off the elevator, but can't stop people from getting on if there are any
         if stopHere == True:
             y = 0 # counter in order to remove every entry of the current floor from the queuedFloors list
             for i in queuedFloors:
@@ -254,9 +252,6 @@ while True:
         print("")
 
     
-    if len(queuedFloors) == 0: # if queuedFloors is empty then everything from the backupQueue replaces it
-        queuedFloors = backupQueue
-        backupQueue = []
 
     if len(calledUp) != 0 or len(calledDown) != 0: 
         callCheck = True
@@ -342,20 +337,11 @@ while True:
     if len(queuedFloors) > 0 and prior == "none": # this happens if the elevator going in no direction and at least one person on the elevator has picked a location
         direction = pathing(currentFloor, queuedFloors)
     else:
-        if prior == "up": # if the elevator was previously going up, this checks if it should still go up
-            check1 = pathing(currentFloor, queuedFloors)
-            check2 = followup(currentFloor, backupQueue, prior)
-            if check1 == "up" or check2 == True:
-                direction = "up"
-            else:
-                direction = pathing(currentFloor, queuedFloors)
-        if prior == "down": # if the elevator was previously going down this checks if it should still go down
-            check1 = pathing(currentFloor, queuedFloors)
-            check2 = followup(currentFloor, backupQueue, prior)
-            if check1 == "down" or check2 == True:
-                direction = "down"
-            else:
-                direction = pathing(currentFloor, queuedFloors)
+        check1 = pathing(currentFloor, queuedFloors)
+        if prior == check1: # this checks if the elevator should stay moving in its current direction based on whether there are any more floors to stop at
+            direction = prior
+        else:
+            direction = pathing(currentFloor, queuedFloors)
 
     if direction == "up": # sends the elevator up or down depending on the direction
         currentFloor = currentFloor + 1
@@ -369,13 +355,13 @@ while True:
 
 
 
-# In[29]:
-
-
-
-
-
 # In[ ]:
+
+
+
+
+
+# In[37]:
 
 
 
