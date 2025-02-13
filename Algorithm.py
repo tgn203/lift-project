@@ -118,7 +118,7 @@ def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the
 # next one: fixing the issue when passengers want to go to the same floor by replacing instances of .remove with .pop
 
 
-# In[16]:
+# In[24]:
 
 
 floorLimits: list = [-5, 5]
@@ -158,7 +158,7 @@ weightCount: int = 0
 backupQueue = [] # this is currently redundant and I intend on getting rid of everything related to it soon if I can't find any reason to keep it
 
 
-# In[17]:
+# In[25]:
 
 
 prior: str = "none"
@@ -176,7 +176,7 @@ while True:
                 for i in range(len(requestDict[currentFloor])):
                     queuedFloors.append(requestDict[currentFloor][0])
                     requestDict[currentFloor].pop(0)
-                    weightCount += 1
+                    weightCount = weightCount + 1
                     print("weight (increased) =", weightCount) # keeps track of changes in weight
                 stopHereup = False
     
@@ -185,11 +185,12 @@ while True:
                 for i in range(len(requestDict[currentFloor])):
                     queuedFloors.append(requestDict[currentFloor][0])
                     requestDict[currentFloor].pop(0)
-                    weightCount += 1
+                    weightCount = weightCount + 1
                     print("weight (increased) =", weightCount) # keeps track of changes in weight
 
                 stopHeredown = False
             print("Stopped at floor:", currentFloor) # informs of a stop
+            print("New queued floors: ", queuedFloors)
             print("")
 
     
@@ -229,27 +230,28 @@ while True:
 
 
         print("Stopped at floor:", currentFloor) # informs of a stop
+        print("New queued floors: ", queuedFloors)
         print("")
         
-        if weightCount > hardCapacity: # if the elevator goes above its hardCapacity this simulates passengers leaving and waiting for the elevator to return
-            weightDifference: int = weightCount - hardCapacity
-            print("Previous queued floors: ", queuedFloors)
-            for i in range(weightDifference):
-                goneDestination = queuedFloors[0]
-                queuedFloors.pop(0)
-                if goneDestination > currentFloor:  # checks if the passenger was travelling up or down
-                    calledUp.append(currentFloor)
-                else:
-                    calledDown.append(currentFloor)
-                requestDict[currentFloor].append(goneDestination)
-                weightCount = weightCount - 1
-                print("weight (reduced) =", weightCount) # keeps track of changes in weight
-                print("New queued floors: ", queuedFloors)
-                print("New called up: ", calledUp)
-                print("New called down: ", calledDown)
+    if weightCount > hardCapacity: # if the elevator goes above its hardCapacity this simulates passengers leaving and waiting for the elevator to return
+        weightDifference: int = weightCount - hardCapacity
+        print("Previous queued floors: ", queuedFloors)
+        for i in range(weightDifference):
+            goneDestination = queuedFloors[0]
+            queuedFloors.pop(0)
+            if goneDestination > currentFloor:  # checks if the passenger was travelling up or down
+                calledUp.append(currentFloor)
+            else:
+                calledDown.append(currentFloor)
+            requestDict[currentFloor].append(goneDestination)
+            weightCount = weightCount - 1
+            print("weight (reduced) =", weightCount) # keeps track of changes in weight
+            print("New queued floors: ", queuedFloors)
+            # print("New called up: ", calledUp)
+            # print("New called down: ", calledDown)
 
-            print("Passenger(s) left early due to overcrowding at floor:", currentFloor) # informs of a stop
-            print("")
+        print("Passenger(s) left early due to overcrowding at floor:", currentFloor) # informs of a stop
+        print("")
 
     
     if len(queuedFloors) == 0: # if queuedFloors is empty then everything from the backupQueue replaces it
@@ -367,7 +369,7 @@ while True:
 
 
 
-# In[ ]:
+# In[29]:
 
 
 
