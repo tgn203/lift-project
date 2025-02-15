@@ -1,0 +1,4 @@
+get the first floor in queued floors and store it in current floor
+while there another floor in queued floors not yet gone through:
+    select next floor from queued floors
+    if
