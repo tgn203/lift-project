@@ -4,7 +4,7 @@ import json
 def generate_floor_requests(floors, capacity):
     requests = {}
     for floor in range(1, floors + 1):
-        # Random chance for floor to have requests
+        # Random chance (60%) for floor to have requests
         if random.random() < 0.6:
             possible_destinations = [f for f in range(1, floors + 1) if f != floor]
             num_requests = random.randint(1, min(3, len(possible_destinations)))
