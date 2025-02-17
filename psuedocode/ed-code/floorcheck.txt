@@ -1,0 +1,4 @@
+function floorCheck(current floor, queued floors):
+    if current floor is in queued floors:
+        return true
+    return false
