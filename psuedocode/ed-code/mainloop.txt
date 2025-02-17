@@ -1,0 +1,39 @@
+set hard capacity to 20
+set soft capacity to half of hard capacity
+set weight count to 0
+set prior to none
+set direction to none
+do:
+    set reset to false
+    set stop here to the result of floorcheck using current floor and queued floors
+    set stop here up to the result of floorcheck using current floor and calls up
+    set stop here down to the result of floorcheck using current floor and calls down
+    if (stop here up is true and direction is up or stop here down is true and direction is down) and weight count is less than soft capacity:
+        if stop here up is true:
+            remove current floor from the calls up
+            set stop here up to false
+        else:
+            remove current floor from the calls down
+            set stop here down to false
+        loop for the amount of people at the current floor:
+            add the floor requested of the first person to the queued floors
+            remove the floor request of the first person from queued floors
+            increment weight count
+        output the current floor saying that the algorithm has stopped at this floor
+        output the new queued floors
+    
+    if stop here is true:
+        for any floors in queued floors that is equal to current floor:
+            increment weight count
+        remove all occurances of current floor queued floors
+        if stop here up is true:
+            remove the current floor from calls up
+        if stop here down is true:
+            remove the current floor from calls down
+        if stop here down is true or stop here up is true:
+            loop for the amount of people at the current floor:
+                add the floor requested of the first person to the queued floors
+                remove the floor request of the first person from queued floors
+                increment weight count
+        output the current floor saying that the algorithm has stopped at this floor
+        output the new queued floors
