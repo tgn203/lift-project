@@ -23,9 +23,7 @@ def run_elevator_simulation():
     queued_floors = []
     called_up = []
     called_down = []
-    
-    # Start timing
-    start_time = time.time()
+    theoretical_time = 0  # Track theoretical time in seconds
     
     # Parse requests from config
     for floor, destinations in config['requests'].items():
@@ -33,18 +31,21 @@ def run_elevator_simulation():
         for dest in destinations:
             if dest > floor:
                 called_up.append(floor)
+                theoretical_time += 3  # Loading time per passenger
             else:
                 called_down.append(floor)
+                theoretical_time += 3  # Loading time per passenger
+            
+            # Add movement time to destination
+            theoretical_time += abs(dest - floor) * 3  # 3 seconds per floor movement
+            theoretical_time += 3  # Unloading time at destination
     
     # Run main algorithm loop
     direction = takeRequest(current_floor, called_up, called_down)
     print(f"Initial direction: {direction}")
     
-    # Calculate execution time
-    end_time = time.time()
-    execution_time = end_time - start_time
-    
-    print(f"\nSimulation completed in {execution_time:.4f} seconds")
+    print(f"\nSimulation completed")
+    print(f"Total theoretical time: {theoretical_time} seconds ({theoretical_time/60:.1f} minutes)")
     print(f"Final state - Floor: {current_floor}, Direction: {direction}")
     print(f"Remaining calls up: {called_up}")
     print(f"Remaining calls down: {called_down}")
