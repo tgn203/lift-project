@@ -37,3 +37,43 @@ do:
                 increment weight count
         output the current floor saying that the algorithm has stopped at this floor
         output the new queued floors
+    
+    if weight count is greater than the hard capacity:
+        get the weight difference between weight count and the hard capacity
+        loop for the weight difference:
+            if the first value in queued floors is greater than the current floor:
+                add the current floor to calls up
+            else:
+                add the current floor to calls down
+            drop the first value in queued floors off to the current floor
+            decrement weight count
+            remove the first value from queued floors
+    
+    if there is any calls up or down:
+        set call check to true
+    else:
+        set call check to false
+
+if there are no queued floors and call check is true:
+    set the direction to the result of takerequest(current floor, calls up, calls down)
+    set reset to true
+    if direction is up:
+        set destination to the highest call down
+        if the destination is greater than the first call down:
+            set x to -1 
+        else:
+            set x to 1
+        while true:
+            if the current floor is the destination:
+                set destination check to destination
+                if there is any calls down that are greater than destination check, set destination check to it
+                if destination check is destination:
+                    set the direction to down
+                    set reset to true
+                    break
+                else:
+                    set destination to destination check
+                    if the current floor is lest than destination:
+                        set x to 1
+                    add x to current floor
+            
