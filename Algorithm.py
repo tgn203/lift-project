@@ -126,18 +126,13 @@ class Queue:
     
 
 
-# In[31]:
+# In[38]:
 
 
-# waitingQueue = Queue()
-# print(waitingQueue.size())
-# waitingQueue.addItem(1)
-print(waitingQueue.size())
-# waitingQueue.removeNext()
-# waitingQueue.checkNext()
 
 
-# In[29]:
+
+# In[43]:
 
 
 waitingQueue = Queue()
@@ -179,10 +174,12 @@ weightCount: int = 0
 
 
 
-# In[30]:
+# In[44]:
 
 
 timeCheck: bool = False
+timeCount: int = 0
+timeLimit: int = 10
 prior: str = "none"
 direction: str = "none"
 while True:
@@ -268,6 +265,7 @@ while True:
         print("Previous queued floors: ", queuedFloors)
         for i in range(weightDifference):
             goneDestination = queuedFloors[0]
+            waitingQueue.addItem(queuedFloors[0])
             queuedFloors.pop(0)
             if goneDestination > currentFloor:  # checks if the passenger was travelling up or down
                 calledUp.append(currentFloor)
@@ -283,7 +281,28 @@ while True:
         print("Passenger(s) left early due to overcrowding at floor:", currentFloor) # informs of a stop
         print("")
 
-    
+    timeCount = timeCount + 1
+    for i in range(waitingQueue.size()):
+        if waitingQueue.checkNext in queuedFloors or waitingQueue.checkNext in calledUp or waitingQueue.checkNext in calledDown:
+            break;
+        else:
+            timeCount = 0
+            waitingQueue.removeNext()
+    if (timeCheck == True) and (timeCount > timeLimit):
+        if waitingQueue.checkNext > currentFloor:
+            direction = "up"
+            currentFloor = currentFloor + 1
+            prior = direction
+            print("Current Floor =", currentFloor)
+            continue
+        else:
+            direction = "down"
+            currentFloor = currentFloor - 1
+            prior = direction
+            print("Current Floor =", currentFloor)
+            continue
+
+            
 
     if len(calledUp) != 0 or len(calledDown) != 0: 
         callCheck = True
