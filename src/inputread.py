@@ -128,3 +128,8 @@ def write_config_to_file(config: dict, filepath: str) -> None:
     # Generic error handling
     except Exception as e:
         raise Exception(f"An error occurred: \n\t{e}")
+
+def check_config(config: dict) -> dict:
+    allfloors: list[int] = [for i in range(1, config["num_floors"]+1)]
+    if not all(floor in config["requests"].items() for floor in allfloors):
+        raise Exception(f"Not all floors are set, please make sure you have all floors 1-{config["num_floors"]} set")
