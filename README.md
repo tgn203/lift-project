@@ -10,13 +10,15 @@ elevator-simulator
 │   ├── main.py          # Entry point of the application
 │   ├── elevator.py      # Elevator class for managing movement and passengers
 │   ├── building.py      # Building class for managing floors and elevators
-│   ├── passenger.py     # Passenger class representing individuals in the system
+│   ├── passenger.py     # Passenger class representing individuals in the simulation
 │   ├── Script Generator
 │   │   └── generator.py # Generates scripts to be used for the simulation
 │   ├── config
 │   │   └── settings.py  # Configuration settings for the simulation
 │   └── algorithms
 │       └── __init__.py  # Package for future elevator algorithms
+│       └── Algorithm.py  # Elevator algorithm
+│       └── run_algorithm.py  # Enables algoritms to be run and displayed in the terminal
 ├── config.json          # Configuration file for floors and elevators
 ├── requirements.txt     # List of dependencies for the project
 └── README.md            # Documentation for the project
