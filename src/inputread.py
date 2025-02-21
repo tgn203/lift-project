@@ -1,4 +1,3 @@
-
 """
 frontend.py
 Thomas Noakes, 2025
@@ -87,7 +86,10 @@ def convert_config_txt_to_dict(text: str) -> dict[str, str]:
             continue
 
         else:
-            requests = [int(_) for _ in split[1].split(", ")]
+            try:
+                requests = [int(_) for _ in split[1].split(", ")]
+            except ValueError:
+                raise Exception("Please make sure each call is an integer")
             config["requests"][int(split[0])] = requests
 
     return config
@@ -129,7 +131,33 @@ def write_config_to_file(config: dict, filepath: str) -> None:
     except Exception as e:
         raise Exception(f"An error occurred: \n\t{e}")
 
-def check_config(config: dict) -> dict:
-    allfloors: list[int] = [for i in range(1, config["num_floors"]+1)]
-    if not all(floor in config["requests"].items() for floor in allfloors):
-        raise Exception(f"Not all floors are set, please make sure you have all floors 1-{config["num_floors"]} set")
+
+def check_config(config: dict) -> None:
+    allfloors: list[int] = [i for i in range(1, config["num_floors"] + 1)]
+    if not all(floor in list(config["requests"].keys()) for floor in allfloors):
+        raise Exception(
+            f"Not all floors are set, please make sure you have all floors 1-{config["num_floors"]} set"
+        )
+    if not all(floor in allfloors for floor in list(config["requests"].keys())):
+        raise Exception(
+            f"Not all floors are valid, please make sure you have all floors between 1-{config["num_floors"]}"
+        )
+    if not all(type(floor) == list for floor in list(config["requests"].values())):
+        raise Exception(f"Not all floor calls are stored in a list")
+    if not all(
+        all(type(value) == int for value in floor)
+        for floor in config["requests"].values()
+    ):
+        raise Exception(
+            f"Not all calls are integers, make sure each value is an integer"
+        )
+    if not all(
+        all(value in allfloors for value in floor)
+        for floor in config["requests"].values()
+    ):
+        raise Exception(f"Not all calls are between 1-{config["num_floors"]}")
+
+
+config: dict = load_config_from_file("test.txt")
+check_config(config)
+print(config)
