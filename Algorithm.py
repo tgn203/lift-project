@@ -1,7 +1,132 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[6]:
+# In[ ]:
+
+
+import os
+import json
+
+
+def load_config_from_file(filepath: str) -> dict[str, str]:
+    # Check if the file exists
+    if not os.path.isfile(filepath):
+        raise FileNotFoundError(f"Config file {filepath} cannot be found.")
+
+    # Check if the file is a `.json` or `.txt` file
+    extension = filepath.split(".")[-1]
+    if extension not in ["json", "txt"]:
+        raise NotImplementedError("Config file must be of type JSON or TXT.")
+
+    # Attempt to open the file
+    try:
+        with open(filepath, "r", encoding="utf8") as file:
+            text = file.read()
+            file.close()
+    # Generic error handling
+    except Exception as e:
+        raise Exception(f"An error occurred: \n\t{e}")
+
+    # Convert text config to JSON
+    if extension == "txt":
+        config = convert_config_txt_to_dict(text)
+
+    # Attempt to convert the text to a dict using JSON decoder
+    elif extension == "json":
+        try:
+            config = json.loads(text)
+        # Catch errors on decoding the JSON
+        except json.decoder.JSONDecodeError as e:
+            raise Exception(f"JSON Decoding error: \n\t{e}")
+
+    return config
+
+
+def convert_config_txt_to_dict(text: str) -> dict[str, str]:
+    # Note: assume the file exists, already checked in calling scope
+
+    # Take text from already opened file, split into lines
+    lines = text.split("\n")
+    new_lines: list[str] = []
+    for line in lines:
+        # Remove empty lines
+        if not line:
+            continue
+
+        # Remove 'comment lines', i.e. starts with `#`
+        if line[0] == "#":
+            continue
+
+        # Add remaining lines to the new list
+        new_lines.append(line)
+
+    # Create empty config dict
+    config: dict = {
+        "num_floors": 0,
+        "capacity": 0,
+        "requests": {},
+    }
+
+    # First line contains num. floors and capacity
+    [num_floors, capacity] = new_lines[0].split(", ")
+    config["num_floors"] = int(num_floors)
+    config["capacity"] = int(capacity)
+
+    # Remaining lines are floors and their requests
+    for line in new_lines[1::]:
+        # Seperate line into segments and remove spaces
+        split = [_.strip() for _ in line.split(":")]
+
+        # Add empty floors to dict
+        if not split[1]:
+            config["requests"][int(split[0])] = []
+            continue
+
+        else:
+            requests = [int(_) for _ in split[1].split(", ")]
+            config["requests"][int(split[0])] = requests
+
+    return config
+
+
+def write_config_to_file(config: dict, filepath: str) -> None:
+    # Check if the file is a `.json` or `.txt` file
+    extension = filepath.split(".")[-1]
+    if extension not in ["json", "txt"]:
+        raise NotImplementedError("Config file must be of type JSON or TXT.")
+
+    if extension == "json":
+        # Convert the config dict to a JSON object
+        config_text = str(json.dumps(config))
+
+    else:
+        # Convert to text form
+        lines = ["# Number of Floors, Capacity"]
+
+        # Add line for floor number and capacity config
+        lines.append(f"{config["num_floors"]}, {config["capacity"]}")
+        lines.append("")
+
+        # Add line for each floor config
+        lines.append("# Floor Requests")
+        for floor, requests in config["requests"].items():
+            # Convert floor numbers to strs
+            requests = [str(_) for _ in requests]
+            lines.append(f"{floor}: {", ".join(requests)}".strip())
+
+        config_text = "\n".join(lines)
+
+    # Attempt to open and write the file
+    try:
+        with open(filepath, "w", encoding="utf8") as file:
+            file.write(config_text)
+            file.close()
+    # Generic error handling
+    except Exception as e:
+        raise Exception(f"An error occurred: \n\t{e}")
+
+
+# In[1]:
 
 
 def floorCheck(currentFloor, queuedFloors): # a simple check to see if the current floor is inside a list
@@ -12,7 +137,7 @@ def floorCheck(currentFloor, queuedFloors): # a simple check to see if the curre
     
 
 
-# In[7]:
+# In[2]:
 
 
 def pathing(currentFloor, queuedFloors): # compares the longest distance the elevator has to travel up, and the longest distance down, and chooses the shorter distance to travel in
@@ -42,7 +167,7 @@ def pathing(currentFloor, queuedFloors): # compares the longest distance the ele
     
 
 
-# In[8]:
+# In[3]:
 
 
 def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its destination from the original list this checks if it should keep going
@@ -59,7 +184,7 @@ def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its 
     
 
 
-# In[9]:
+# In[30]:
 
 
 def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the elevator has no one on it but there are people calling it
@@ -102,22 +227,26 @@ def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the
     
 
 
-# In[3]:
+# In[31]:
 
 
-class Queue:
+# the Queue class here works using a basic python list and giving it custom methods that follow the rules of FIFO
+class Queue: 
 
-    theQueue = []
-    
+    theQueue = [] 
+    # the constructor that makes the Queue
     def __init__(self):
         self.theQueue = []
-    
+        
+    # returns the length of the list
     def size(self):
         return len(self.theQueue)
         
+        # appends an item to the end of the list and only the end
     def addItem(self, newItem):
         self.theQueue.append(newItem)
 
+    # removes the oldest item from the list
     def removeNext(self):
         self.theQueue.pop(0)
 
@@ -126,32 +255,32 @@ class Queue:
     
 
 
-# In[38]:
+# In[32]:
 
 
+# config = load_config_from_file("config.json")
 
 
-
-# In[43]:
+# In[37]:
 
 
 waitingQueue = Queue()
-floorLimits: list = [-5, 5]
-requestDict: dict = {}
-for i in range(floorLimits[0], floorLimits[1] + 1):
-    requestDict[i] = []
-requestDict[4].append(2) # these are test values to show how the program should work, however in practice I expect the dictionary to be made with something imported
-requestDict[4].append(2)
-requestDict[4].append(3)
+# floorLimits: list = [-5, 5]
+# requestDict: dict = {}
+# for i in range(floorLimits[0], floorLimits[1] + 1):
+#     requestDict[i] = []
+# requestDict[4].append(2) # these are test values to show how the program should work, however in practice I expect the dictionary to be made with something imported
+# requestDict[4].append(2)
+# requestDict[4].append(3)
 
-requestDict[4].append(-4)
-requestDict[5].append(0)
+# requestDict[4].append(-4)
 # requestDict[5].append(0)
-# requestDict[5].append(0)
+# # requestDict[5].append(0)
+# # requestDict[5].append(0)
 
-requestDict[1].append(4)
-requestDict[-3].append(-2)
-requestDict[-2].append(5)
+# requestDict[1].append(4)
+# requestDict[-3].append(-2)
+# requestDict[-2].append(5)
 
 queuedFloors: list[int] = [] #queuedFloors would be the initial set of buttons pressed when someone gets on the elevator when the elvator has no other locations
 currentFloor: int = 0
@@ -159,6 +288,12 @@ currentFloor: int = 0
 calledUp: list[int] = []
 calledDown: list[int] = []
 
+config = load_config_from_file("config.json")
+requestDict = {}
+for i in config["requests"].keys():
+    requestDict[int(i)] = config["requests"][i]
+
+# adds the floors that have call up requests and call down requests to their respective list
 for i in requestDict.keys():
     for k in requestDict[i]:
         if k < currentFloor:
@@ -168,14 +303,45 @@ for i in requestDict.keys():
             calledUp.append(i)
             waitingQueue.addItem(i)
 
-hardCapacity: int = 20
-softCapacity: int = hardCapacity/2
-weightCount: int = 0
+# these values determine how much the elevator can hold
+hardCapacity: int = config["capacity"] # hardCapacity is the limit at which no one else can get on the elevator or else the elevator stops and waits for others to get off
+softCapacity: int = hardCapacity/1.5 # softCapacity is the limit where the elevator ignores requests to get on the elevator so it can be reduce weight
+weightCount: int = 0 # this measures how many people are on the elevator
 
 
+heightCheck: int = config["num_floors"]  # an easier variable to remember
 
-# In[44]:
+# creates a list of all floors mentioned to exist in the config
+allFloors = calledDown + calledUp
+for i in requestDict.keys():
+    allFloors.append(i)
+    allFloors.append(max(requestDict[i]))
+    allFloors.append(min(requestDict[i]))
 
+# makes sure the number of floors claimed to exist is equal or greater than the number of floors that exists in the dictionary
+if (max(allFloors) - min(allFloors) + 1) > heightCheck:
+    print("Floor count is less than the amount of floors on the elevator, exiting program")
+    exit()
+
+# fills in any missing floors in the list
+for i in range(heightCheck):
+    allFloors.append(i + min(allFloors))
+
+# removes any floors that already exist in the dictionary
+for i in requestDict.keys():
+    while i in allFloors:
+        allFloors.remove(i)
+
+# fills in any missing floors in the dictionary
+for i in allFloors:
+    requestDict[i] = []
+
+
+# In[38]:
+
+
+movements = 0
+stops = []
 
 timeCheck: bool = False
 timeCount: int = 0
@@ -183,6 +349,7 @@ timeLimit: int = 10
 prior: str = "none"
 direction: str = "none"
 while True:
+    stopCheck = True
     timeCheck = False
     reset = False
     stopHere = floorCheck(currentFloor, queuedFloors) # checks if there any floors to stop at
@@ -191,7 +358,8 @@ while True:
 
     if ((stopHereup == True and direction == "up") or (stopHeredown == True and direction == "down")) and weightCount < softCapacity: # the elevator won't stop to let new people on if it's at the softcap for weight
             if stopHereup == True:
-                calledUp.remove(currentFloor)
+                while currentFloor in calledUp:
+                    calledUp.remove(currentFloor)
                 for i in range(len(requestDict[currentFloor])):
                     queuedFloors.append(requestDict[currentFloor][0])
                     waitingQueue.addItem(requestDict[currentFloor][0])
@@ -202,7 +370,8 @@ while True:
                 stopHereup = False
     
             if stopHeredown == True:
-                calledDown.remove(currentFloor)
+                while currentFloor in calledDown:
+                    calledDown.remove(currentFloor)
                 for i in range(len(requestDict[currentFloor])):
                     queuedFloors.append(requestDict[currentFloor][0])
                     waitingQueue.addItem(requestDict[currentFloor][0])
@@ -212,9 +381,13 @@ while True:
                     print("weight (increased) =", weightCount) # keeps track of changes in weight
 
                 stopHeredown = False
+
+            stops.append(currentFloor)
+            stopCheck = False
             print("Stopped at floor:", currentFloor) # informs of a stop
             print("New queued floors: ", queuedFloors)
             print("")
+        
 
     
         
@@ -233,7 +406,8 @@ while True:
                 queuedFloors.remove(currentFloor)
             
         if stopHereup == True:
-            calledUp.remove(currentFloor)
+            while currentFloor in calledUp:
+                calledUp.remove(currentFloor)
             for i in range(len(requestDict[currentFloor])):
                 waitingQueue.addItem(requestDict[currentFloor][0])
                 # print(waitingQueue.size())
@@ -245,7 +419,8 @@ while True:
 
 
         if stopHeredown == True:
-            calledDown.remove(currentFloor)
+            while currentFloor in calledDown:
+                calledDown.remove(currentFloor)
             for i in range(len(requestDict[currentFloor])):
                 waitingQueue.addItem(requestDict[currentFloor][0])
                 # print(waitingQueue.size())
@@ -254,7 +429,9 @@ while True:
                 weightCount += 1
                 print("weight (increased) =", weightCount) # keeps track of changes in weight
                 print(requestDict[currentFloor])
-
+                
+        if stopCheck == True:
+            stops.append(currentFloor)
 
         print("Stopped at floor:", currentFloor) # informs of a stop
         print("New queued floors: ", queuedFloors)
@@ -338,10 +515,12 @@ while True:
                         if currentFloor < destination:
                             x = 1
                         currentFloor = currentFloor + x
-                        
+                        print("Current Floor =", currentFloor)
+                        movements = movements + 1
                 else:
                     currentFloor = currentFloor + x # this will repeat until it reaches the correct floor
                     print("Current Floor =", currentFloor)
+                    movements = movements + 1
 
 
         elif direction == "down": 
@@ -371,9 +550,12 @@ while True:
                         if currentFloor > destination:
                             x = -1
                         currentFloor = currentFloor + x
+                        print("Current Floor =", currentFloor)
+                        movements = movements + 1
                 else:
                     currentFloor = currentFloor + x
                     print("Current Floor =", currentFloor)
+                    movements = movements + 1
 
                     
     if reset == True:
@@ -397,8 +579,10 @@ while True:
 
     if direction == "up": # sends the elevator up or down depending on the direction
         currentFloor = currentFloor + 1
+        movements = movements + 1
     elif direction == "down":
         currentFloor = currentFloor - 1
+        movements = movements + 1
     else:
         break
     prior = direction
@@ -413,13 +597,25 @@ while True:
 
 
 
-# In[37]:
+# In[29]:
 
 
 
+
+
+# In[44]:
+
+
+returningDictionary = {"stops" : list(stops), "movements" : int(movements)}
 
 
 # In[ ]:
+
+
+
+
+
+# In[42]:
 
 
 
