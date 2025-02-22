@@ -5,7 +5,8 @@
 form {
     /* Made into its own block to stand out */
     width: 50vw;
-    height: 60vh;
+    min-height: 60vh;
+    padding: 3vh;
 
     flex-direction: column;     /* Stack different input horizontally */
 
@@ -20,9 +21,16 @@ form {
     margin-bottom: 20px;
 }
 
+.info {
+    padding: 1vh;
+    text-align: center;
+    font-size: 0.9em;
+}
+
 input {
     /* Applies to all types of input */
-    height: 3vh;
+    min-height: 3vh;
+    max-height: 5vh;
     width: 10vw;
     margin-left: 20px;
     padding: 5px;
@@ -60,7 +68,7 @@ input[type="checkbox"] {
     cursor: pointer;
 
     /* Smoothly change background colour */
-    transition: all .1s ease-in-out;
+    transition: all .2s ease-in-out;
 }
 
 input[type="checkbox"]:checked {
@@ -83,6 +91,13 @@ input[type=number] {
     }
 }
 
+/* ===== ERROR INPUT ===== */
+.error {
+    background-color: red;
+    border: 2px solid darkred;
+}
+
+
 /* ===== TOGGLING LABELS ===== */
 .literal-name {
     /* 'Code font' text label */
@@ -91,7 +106,16 @@ input[type=number] {
     display: none;      /* Start hidden by default */
 }
 
-.pretty-name{
+.pretty-name {
     /* Basic text label */
     font-size: 1.75em;
+}
+
+/* ===== FLOOR INPUTS ===== */
+.floor-input > * > .pretty-name {
+    font-size: 1.25em;
+}
+
+.floor-input > * > .literal-name {
+    font-size: 1em;
 }

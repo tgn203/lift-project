@@ -29,11 +29,30 @@
                             <p class="literal-name">{{ k }}:</p>
                             <p class="pretty-name">{{ v[1] }}:</p>
                         </label>
-                        <input type="{{ v[0] }}" id="{{ k + 'Input' }}" value="{{ v[2] }}">
+                        <input type="{{ v[0] }}" id="{{ k + 'Input' }}" name="{{ k + 'Input' }}" value="{{ v[2] }}">
                     </div>
                 {% endfor %}
-        
-                <input type="submit" value="Submit">
+
+                <p class="info">
+                    Passengers waiting per floor:
+                    <br><i>(Enter comma-separated numbers)</i>
+                </p>
+
+                <!-- Input for those waiting per floor -->
+                <!-- Depends on the number of floors, dynamically created with JS -->
+                {% for i in range(config_options["numFloors"][2]): %}
+                <div id="floorInputs">
+                    <div class="form-group floor-input">
+                        <label for="floor{{ i + 1 }}Input">
+                            <p class="pretty-name">Waiting on Floor {{ i + 1 }}:</p>
+                            <p class="literal-name">floor{{ i + 1 }}waiting:</p>
+                        </label>
+                        <input class type="text" id="floor{{ i + 1 }}Input" name="floor{{ i + 1 }}Input" placeholder="Waiting...">
+                    </div>
+                </div>
+                {% endfor %}
+
+                <input type="submit" value="Submit" formaction="{{ url_for('Config') }}" formmethod="post">
 
                 <!-- Checkbox to toggle literal variable names on/off -->
                 <div class="form-group">
