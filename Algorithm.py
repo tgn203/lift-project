@@ -261,7 +261,7 @@ class Queue:
 # config = load_config_from_file("config.json")
 
 
-# In[58]:
+# In[66]:
 
 
 waitingQueue = Queue()
@@ -340,11 +340,12 @@ for i in allFloors:
     requestDict[i] = []
 
 
-# In[56]:
+# In[67]:
 
 
 movements = 0
 stops = []
+debug = True
 
 timeCheck: bool = False
 timeCount: int = 0
@@ -369,7 +370,8 @@ while True:
                     # print(waitingQueue.size())
                     requestDict[currentFloor].pop(0)
                     weightCount = weightCount + 1
-                    print("weight (increased) =", weightCount) # keeps track of changes in weight
+                    if debug:
+                        print("weight (increased) =", weightCount) # keeps track of changes in weight
                 stopHereup = False
     
             if stopHeredown == True:
@@ -381,15 +383,17 @@ while True:
                     # print(waitingQueue.size())
                     requestDict[currentFloor].pop(0)
                     weightCount = weightCount + 1
-                    print("weight (increased) =", weightCount) # keeps track of changes in weight
+                    if debug:
+                        print("weight (increased) =", weightCount) # keeps track of changes in weight
 
                 stopHeredown = False
 
             stops.append(currentFloor)
             stopCheck = False
-            print("Stopped at floor:", currentFloor) # informs of a stop
-            print("New queued floors: ", queuedFloors)
-            print("")
+            if debug:
+                print("Stopped at floor:", currentFloor) # informs of a stop
+                print("New queued floors: ", queuedFloors)
+                print("")
         
 
     
@@ -402,7 +406,8 @@ while True:
             for i in queuedFloors:
                 if currentFloor == i:
                     weightCount = weightCount - 1
-                    print("weight (reduced) =", weightCount) # keeps track of changes in weight
+                    if debug:
+                        print("weight (reduced) =", weightCount) # keeps track of changes in weight
                     y = y + 1
                     # print(i)
             for i in range(y):
@@ -417,8 +422,9 @@ while True:
                 queuedFloors.append(requestDict[currentFloor][0])
                 requestDict[currentFloor].pop(0)
                 weightCount += 1
-                print("weight (increased) =", weightCount) # keeps track of changes in weight
-                print(requestDict[currentFloor])
+                if debug:
+                    print("weight (increased) =", weightCount) # keeps track of changes in weight
+                    print(requestDict[currentFloor])
 
 
         if stopHeredown == True:
@@ -430,19 +436,22 @@ while True:
                 queuedFloors.append(requestDict[currentFloor][0])
                 requestDict[currentFloor].pop(0)
                 weightCount += 1
-                print("weight (increased) =", weightCount) # keeps track of changes in weight
-                print(requestDict[currentFloor])
+                if debug:
+                    print("weight (increased) =", weightCount) # keeps track of changes in weight
+                    print(requestDict[currentFloor])
                 
         if stopCheck == True:
             stops.append(currentFloor)
 
-        print("Stopped at floor:", currentFloor) # informs of a stop
-        print("New queued floors: ", queuedFloors)
-        print("")
+        if debug:
+            print("Stopped at floor:", currentFloor) # informs of a stop
+            print("New queued floors: ", queuedFloors)
+            print("")
         
     if weightCount > hardCapacity: # if the elevator goes above its hardCapacity this simulates passengers leaving and waiting for the elevator to return
         weightDifference: int = weightCount - hardCapacity
-        print("Previous queued floors: ", queuedFloors)
+        if debug:
+            print("Previous queued floors: ", queuedFloors)
         for i in range(weightDifference):
             goneDestination = queuedFloors[0]
             waitingQueue.addItem(queuedFloors[0])
@@ -453,13 +462,15 @@ while True:
                 calledDown.append(currentFloor)
             requestDict[currentFloor].append(goneDestination)
             weightCount = weightCount - 1
-            print("weight (reduced) =", weightCount) # keeps track of changes in weight
-            print("New queued floors: ", queuedFloors)
+            if debug:
+                print("weight (reduced) =", weightCount) # keeps track of changes in weight
+                print("New queued floors: ", queuedFloors)
             # print("New called up: ", calledUp)
             # print("New called down: ", calledDown)
-
-        print("Passenger(s) left early due to overcrowding at floor:", currentFloor) # informs of a stop
-        print("")
+        
+        if debug:
+            print("Passenger(s) left early due to overcrowding at floor:", currentFloor) # informs of a stop
+            print("")
 
     timeCount = timeCount + 1
     for i in range(waitingQueue.size()):
@@ -473,13 +484,15 @@ while True:
             direction = "up"
             currentFloor = currentFloor + 1
             prior = direction
-            print("Current Floor =", currentFloor)
+            if debug:
+                print("Current Floor =", currentFloor)
             continue
         else:
             direction = "down"
             currentFloor = currentFloor - 1
             prior = direction
-            print("Current Floor =", currentFloor)
+            if debug:            
+                print("Current Floor =", currentFloor)
             continue
 
             
@@ -518,11 +531,13 @@ while True:
                         if currentFloor < destination:
                             x = 1
                         currentFloor = currentFloor + x
-                        print("Current Floor =", currentFloor)
+                        if debug:
+                            print("Current Floor =", currentFloor)
                         movements = movements + 1
                 else:
                     currentFloor = currentFloor + x # this will repeat until it reaches the correct floor
-                    print("Current Floor =", currentFloor)
+                    if debug:
+                        print("Current Floor =", currentFloor)
                     movements = movements + 1
 
 
@@ -553,11 +568,13 @@ while True:
                         if currentFloor > destination:
                             x = -1
                         currentFloor = currentFloor + x
-                        print("Current Floor =", currentFloor)
+                        if debug:
+                            print("Current Floor =", currentFloor)
                         movements = movements + 1
                 else:
                     currentFloor = currentFloor + x
-                    print("Current Floor =", currentFloor)
+                    if debug:
+                        print("Current Floor =", currentFloor)
                     movements = movements + 1
 
                     
@@ -589,7 +606,8 @@ while True:
     else:
         break
     prior = direction
-    print("Current Floor =", currentFloor)
+    if debug:
+        print("Current Floor =", currentFloor)
 
 
 
@@ -618,7 +636,7 @@ returningDictionary = {"stops" : list(stops), "movements" : int(movements)}
 
 
 
-# In[46]:
+# In[ ]:
 
 
 
