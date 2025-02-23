@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[48]:
 
 
 import os
@@ -126,7 +126,7 @@ def write_config_to_file(config: dict, filepath: str) -> None:
         raise Exception(f"An error occurred: \n\t{e}")
 
 
-# In[1]:
+# In[49]:
 
 
 def floorCheck(currentFloor, queuedFloors): # a simple check to see if the current floor is inside a list
@@ -137,7 +137,7 @@ def floorCheck(currentFloor, queuedFloors): # a simple check to see if the curre
     
 
 
-# In[2]:
+# In[50]:
 
 
 def pathing(currentFloor, queuedFloors): # compares the longest distance the elevator has to travel up, and the longest distance down, and chooses the shorter distance to travel in
@@ -167,7 +167,7 @@ def pathing(currentFloor, queuedFloors): # compares the longest distance the ele
     
 
 
-# In[3]:
+# In[51]:
 
 
 def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its destination from the original list this checks if it should keep going
@@ -184,7 +184,7 @@ def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its 
     
 
 
-# In[30]:
+# In[52]:
 
 
 def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the elevator has no one on it but there are people calling it
@@ -227,7 +227,7 @@ def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the
     
 
 
-# In[31]:
+# In[53]:
 
 
 # the Queue class here works using a basic python list and giving it custom methods that follow the rules of FIFO
@@ -255,13 +255,13 @@ class Queue:
     
 
 
-# In[32]:
+# In[54]:
 
 
 # config = load_config_from_file("config.json")
 
 
-# In[37]:
+# In[58]:
 
 
 waitingQueue = Queue()
@@ -291,7 +291,10 @@ calledDown: list[int] = []
 config = load_config_from_file("config.json")
 requestDict = {}
 for i in config["requests"].keys():
-    requestDict[int(i)] = config["requests"][i]
+    try:
+        requestDict[int(i)] = config["requests"][i]
+    except ValueError:
+        raise ValueError("A key exists in the dictionary that can't be converted into an integer")
 
 # adds the floors that have call up requests and call down requests to their respective list
 for i in requestDict.keys():
@@ -321,7 +324,7 @@ for i in requestDict.keys():
 # makes sure the number of floors claimed to exist is equal or greater than the number of floors that exists in the dictionary
 if (max(allFloors) - min(allFloors) + 1) > heightCheck:
     print("Floor count is less than the amount of floors on the elevator, exiting program")
-    exit()
+    raise SystemExit(0)
 
 # fills in any missing floors in the list
 for i in range(heightCheck):
@@ -337,7 +340,7 @@ for i in allFloors:
     requestDict[i] = []
 
 
-# In[38]:
+# In[56]:
 
 
 movements = 0
@@ -615,7 +618,7 @@ returningDictionary = {"stops" : list(stops), "movements" : int(movements)}
 
 
 
-# In[42]:
+# In[46]:
 
 
 
