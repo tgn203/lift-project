@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[48]:
+# In[69]:
 
 
 import os
@@ -126,7 +126,7 @@ def write_config_to_file(config: dict, filepath: str) -> None:
         raise Exception(f"An error occurred: \n\t{e}")
 
 
-# In[49]:
+# In[70]:
 
 
 def floorCheck(currentFloor, queuedFloors): # a simple check to see if the current floor is inside a list
@@ -137,7 +137,7 @@ def floorCheck(currentFloor, queuedFloors): # a simple check to see if the curre
     
 
 
-# In[50]:
+# In[71]:
 
 
 def pathing(currentFloor, queuedFloors): # compares the longest distance the elevator has to travel up, and the longest distance down, and chooses the shorter distance to travel in
@@ -167,7 +167,7 @@ def pathing(currentFloor, queuedFloors): # compares the longest distance the ele
     
 
 
-# In[51]:
+# In[72]:
 
 
 def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its destination from the original list this checks if it should keep going
@@ -184,7 +184,7 @@ def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its 
     
 
 
-# In[52]:
+# In[73]:
 
 
 def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the elevator has no one on it but there are people calling it
@@ -227,7 +227,7 @@ def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the
     
 
 
-# In[53]:
+# In[74]:
 
 
 # the Queue class here works using a basic python list and giving it custom methods that follow the rules of FIFO
@@ -255,13 +255,13 @@ class Queue:
     
 
 
-# In[54]:
+# In[75]:
 
 
 # config = load_config_from_file("config.json")
 
 
-# In[66]:
+# In[76]:
 
 
 waitingQueue = Queue()
@@ -340,12 +340,18 @@ for i in allFloors:
     requestDict[i] = []
 
 
-# In[67]:
+# In[77]:
 
 
 movements = 0
 stops = []
 debug = True
+
+stopEntered: list = []
+stopLeft: list = []
+weightDecrease: int = 0
+weightIncrease: int = 0
+stopCheck: bool = True
 
 timeCheck: bool = False
 timeCount: int = 0
@@ -353,6 +359,9 @@ timeLimit: int = 10
 prior: str = "none"
 direction: str = "none"
 while True:
+    weightDecrease = 0
+    weightIncrease = 0
+    
     stopCheck = True
     timeCheck = False
     reset = False
@@ -370,6 +379,7 @@ while True:
                     # print(waitingQueue.size())
                     requestDict[currentFloor].pop(0)
                     weightCount = weightCount + 1
+                    weightIncrease = weightIncrease + 1
                     if debug:
                         print("weight (increased) =", weightCount) # keeps track of changes in weight
                 stopHereup = False
@@ -383,6 +393,7 @@ while True:
                     # print(waitingQueue.size())
                     requestDict[currentFloor].pop(0)
                     weightCount = weightCount + 1
+                    weightIncrease = weightIncrease + 1
                     if debug:
                         print("weight (increased) =", weightCount) # keeps track of changes in weight
 
@@ -406,6 +417,7 @@ while True:
             for i in queuedFloors:
                 if currentFloor == i:
                     weightCount = weightCount - 1
+                    weightDecrease = weightDecrease + 1
                     if debug:
                         print("weight (reduced) =", weightCount) # keeps track of changes in weight
                     y = y + 1
@@ -422,6 +434,7 @@ while True:
                 queuedFloors.append(requestDict[currentFloor][0])
                 requestDict[currentFloor].pop(0)
                 weightCount += 1
+                weightIncrease = weightIncrease + 1
                 if debug:
                     print("weight (increased) =", weightCount) # keeps track of changes in weight
                     print(requestDict[currentFloor])
@@ -436,17 +449,23 @@ while True:
                 queuedFloors.append(requestDict[currentFloor][0])
                 requestDict[currentFloor].pop(0)
                 weightCount += 1
+                weightIncrease = weightIncrease + 1
                 if debug:
                     print("weight (increased) =", weightCount) # keeps track of changes in weight
                     print(requestDict[currentFloor])
                 
         if stopCheck == True:
             stops.append(currentFloor)
+            stopCheck = False
 
         if debug:
             print("Stopped at floor:", currentFloor) # informs of a stop
             print("New queued floors: ", queuedFloors)
             print("")
+
+    if stopCheck == False:
+        stopEntered.append(weightIncrease)
+        stopLeft.append(weightDecrease)
         
     if weightCount > hardCapacity: # if the elevator goes above its hardCapacity this simulates passengers leaving and waiting for the elevator to return
         weightDifference: int = weightCount - hardCapacity
@@ -618,22 +637,16 @@ while True:
 
 
 
-# In[29]:
-
-
-
-
-
-# In[44]:
-
-
-returningDictionary = {"stops" : list(stops), "movements" : int(movements)}
-
-
 # In[ ]:
 
 
 
+
+
+# In[82]:
+
+
+returningDictionary = {"stops" : list(stops), "movements" : int(movements), "on" : list(stopEntered), "off" : list(stopLeft)}
 
 
 # In[ ]:
