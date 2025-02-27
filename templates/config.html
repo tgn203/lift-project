@@ -21,7 +21,7 @@
         </div>
 
         <div id="main" class="centers-items">
-            <form id="configForm" class="centers-items">
+            <form id="configForm" class="centers-items" method="post" action="{{ url_for('Config') }}">
                 <!-- Use Flask to automatically fill config items -->
                 {% for k, v in config_options.items(): %}
                     <div class="form-group">
@@ -40,17 +40,17 @@
 
                 <!-- Input for those waiting per floor -->
                 <!-- Depends on the number of floors, dynamically created with JS -->
-                {% for i in range(config_options["numFloors"][2]): %}
                 <div id="floorInputs">
-                    <div class="form-group floor-input">
-                        <label for="floor{{ i + 1 }}Input">
-                            <p class="pretty-name">Waiting on Floor {{ i + 1 }}:</p>
-                            <p class="literal-name">floor{{ i + 1 }}waiting:</p>
-                        </label>
-                        <input class type="text" id="floor{{ i + 1 }}Input" name="floor{{ i + 1 }}Input" placeholder="Waiting...">
-                    </div>
+                    {% for i in range(config_options["numFloors"][2]): %}
+                        <div class="form-group floor-input">
+                            <label for="floor{{ i + 1 }}Input">
+                                <p class="pretty-name">Waiting on Floor {{ i + 1 }}:</p>
+                                <p class="literal-name">floor{{ i + 1 }}waiting:</p>
+                            </label>
+                            <input type="text" id="floor{{ i + 1 }}Input" name="floor{{ i + 1 }}Input" placeholder="Waiting...">
+                        </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
 
                 <input type="submit" value="Submit" formaction="{{ url_for('Config') }}" formmethod="post">
 

@@ -41,7 +41,7 @@ function updateFloorsInput() {
                 <p class="pretty-name">Waiting on Floor ${i + 1}:</p>
                 <p class="literal-name">floor${i + 1}waiting:</p>
             </label>
-            <input class type="text" id="floor${i + 1}Input" placeholder="Waiting...">
+            <input class type="text" id="floor${i + 1}Input" name="floor${i + 1}Input" placeholder="Waiting...">
         `;
         floorsInputContainer.appendChild(newDiv);
     }
