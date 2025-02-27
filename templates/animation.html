@@ -27,14 +27,21 @@
             <!-- Building for the animation -->
              <div class="building">
                 <div class="shaft" id="shaft">
-                    <div id="elevator" class="elevator"></div>
+                    <div id="elevator" class="elevator">
+                        <p class="capacity-text" id="capacity-text">0/{{ config["capacity"] }}</p>
+                    </div>
                 </div>
 
                 <div class="floors-container">
                     {% for i in range(config["num_floors"]) %}
-                        <div class="floor" id="floor{{ i + 1 }}"></div>
+                        <div class="floor" id="floor{{ i + 1 }}">
+                            <div class="floor-label centers-items">
+                                <p class="floor-label-text">{{ i + 1 }}</p>
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
+
                 <div class="extra-floors-container floors-container" id="extra-floors-container">
                     {% for i in range(config["num_floors"]) %}
                         <div class="floor" id="extraFloor{{ i + 1 }}"></div>

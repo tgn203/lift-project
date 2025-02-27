@@ -6,6 +6,7 @@
     --bg-dark: #1a1a1a;
     --accent-dark: #2a2a2a;
     --selected-dark: #3a3a3a;
+    --highlighted-dark: #585858;
     --text-dark: #cccccc;
     --colour-accent: #277727;
     --colour-accent-bright: color-mix(in srgb, var(--colour-accent) 90%, lightgray 10%);

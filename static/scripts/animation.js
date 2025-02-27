@@ -1,5 +1,6 @@
 // Global variables set in the setup function
 let floorHeight = null;
+let capacity = 0;
 let stops = null;
 let currentFloor = null;
 let boardingList = [];  // Track the number of people boarding per movement
@@ -7,6 +8,7 @@ let exitingList = [];   // Track the number of people exiting per movement
 let peopleOnOffset = [];  // Used for ensuring boarding animations can play in reverse
 let peopleOffOffset = [];  // Used for ensuring boarding animations can play in reverse
 
+let numPasseners = 0;
 let currentIndex = 0;
 let moving = false;
 let animationInterval = null;   // Used to start and stop the animation with the same button
@@ -75,15 +77,16 @@ function stepForward() {
 
 function handlePasseners(index) {
     // Handle passeners embarking
-    let on = boardingList[index];
-    let off = exitingList[index];
+    let on = boardingList[index - 1];
+    let off = exitingList[index - 1];
 
     // Remove people from floor who are boarding
     let floor = document.getElementById(`floor${currentFloor}`);
     let peopleList = Array.from(floor.children);
 
     for (let i = 0; i < on; i++) {
-        peopleList[i].style.transform = "translateX(-1000px)";
+        // Note: +1 skips the floor label
+        peopleList[i + 1].style.transform = "translateX(-1000px)";
     }
     peopleOnOffset[currentFloor - 1] = peopleOnOffset[currentFloor - 1] + on;
 
@@ -106,12 +109,17 @@ function handlePasseners(index) {
         setTimeout(() => {newPerson.style.transform = `translateX(${1500 + 40*i}px)`}, 50);
     }
     peopleOffOffset[currentFloor - 1] = peopleOffOffset[currentFloor - 1] + off;
+
+    // Change the text on the elevator to new number of passengers
+    const capacityText = document.getElementById("capacity-text");
+    numPasseners = numPasseners + on - off;
+    capacityText.innerHTML = `${numPasseners}/${capacity}`;
 }
 
 function handlePassengersReverse(index) {
     // This is used when the step backwards button is used
-    let on = boardingList[index];
-    let off = exitingList[index];
+    let on = boardingList[index - 1];
+    let off = exitingList[index - 1];
 
     // Place previously exited people back on
     offOffset = peopleOffOffset[currentFloor - 1];
@@ -131,9 +139,15 @@ function handlePassengersReverse(index) {
 
     onOffset = peopleOnOffset[currentFloor - 1];
     for (let i = 0; i < on; i++) {
-        peopleList[onOffset - i - 1].style.transform = "translateX(0px)";
+        // Note: no -1 skips the floor label
+        peopleList[onOffset - i].style.transform = "translateX(0px)";
     }
     peopleOnOffset[currentFloor - 1] = peopleOnOffset[currentFloor - 1] - on;
+
+    // Change the text on the elevator to new number of passengers
+    const capacityText = document.getElementById("capacity-text");
+    numPasseners = numPasseners - on + off;
+    capacityText.innerHTML = `${numPasseners}/${capacity}`;
 }
 
 function stylePlayButton(moving) {
@@ -165,6 +179,7 @@ function setup() {
         .then(response => response.json())
         .then(data => {
             // Assign global variables
+            capacity = data.config.capacity;
             stops = data.stops;
             currentFloor = stops[0];
             boardingList = data.on;
