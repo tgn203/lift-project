@@ -23,6 +23,9 @@ from flask import (
 from typing import cast
 import secrets
 import logging
+import os
+
+from load_config import load_config_from_file
 
 # Flask configuration variables
 FLASK_PORT = 8080
@@ -40,8 +43,29 @@ app.secret_key = SECRET_KEY
 
 
 # Default homepage
-@app.route("/", methods=["GET"])
-def Index() -> str:
+@app.route("/", methods=["GET", "POST"])
+def Index() -> Response | str:
+    if request.method == "POST":
+        # Get the files from the 'form'
+        if "file" not in request.files:
+            return "No file part found"
+
+        # Get and check the filename
+        file = request.files["file"]
+        filename = file.filename
+        if filename == "":
+            return "No selected file"
+
+        # The file must be saved to access the contents
+        filepath = os.path.join(os.path.dirname(__file__), filename)
+        file.save(filepath)
+
+        # Add the config to session storage
+        config = load_config_from_file(filepath)
+        session["config"] = config
+
+        # Redirect to animation handled by JS in page.
+
     return render_template("index.html")
 
 

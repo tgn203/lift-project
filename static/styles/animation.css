@@ -101,7 +101,7 @@
     grid-column: 2;
 
     display: grid;
-    grid-template-rows: auto;
+    grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
 }
 
 .floor {
