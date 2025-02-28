@@ -25,7 +25,7 @@ import secrets
 import logging
 import os
 
-from load_config import load_config_from_file
+from inputread import load_config_from_file
 
 # Flask configuration variables
 FLASK_PORT = 8080
