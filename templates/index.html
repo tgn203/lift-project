@@ -4,10 +4,14 @@
         <!-- Metadata setup -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
+                
+        <!-- Title and icon -->
         <title>Lift Simulator</title>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
         
         <!-- Import CSS -->
         <link href="{{ url_for('static', filename='styles/style.css') }} " rel="stylesheet">
+        <link href="{{ url_for('static', filename='styles/index.css') }} " rel="stylesheet">
     </head>
 
     <body>
@@ -19,9 +23,33 @@
             </button>
         </div>
 
-        <div id="main" class="centers-items"></div>
+        <div id="main" class="centers-items">
+            <!-- Titles -->
+            <h1>ECM1414: Data Structures and Algorithms</h1>
+            <h2>Lift Algorithm Coursework</h2>
+
+            <!-- Config loading buttons -->
+            <div id="config-container" class="centers-items">
+                <a href="/config">
+                    <!-- Redirect to config page -->
+                    <button type="submit">Begin</button>
+                </a>
+                <button type="submit" id="uploadButton">Load configuration from file</button>
+                <input type="file" id="fileInput" accept=".txt, .json" style="display: none;">
+            </div>
+
+            <!-- Authors -->
+            <div id="authors" class="centers-items">
+                <h3><u>Designed by:</u></h3>
+                <p>Thomas Noakes</p>
+                <p>Edward Dancey</p>
+                <p>Maximilien Read</p>
+                <p>Nick Woods</p>
+            </div>
+        </div>
     </body>
 
     <!-- Import scripts -->
     <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </html>

@@ -1,0 +1,56 @@
+/* Import colour variables and font */
+@import url('variables.css');
+
+/* ===== MAIN ===== */
+#main {
+    flex-direction: column;
+}
+
+#main > h1 {
+    font-size: 3.5em;
+}
+
+#main > h2 {
+    font-size: 2.5em;
+    padding-bottom: 10vh;
+}
+
+/* ===== CONFIG LOADING OPTIONS ===== */
+#config-container {
+    flex-direction: column;
+    padding-bottom: 10vh;
+}
+
+button[type="submit"] {
+    width: 20vw;
+    
+    padding: 5px;
+    margin-bottom: 1vh;
+
+    border-radius: 5px;
+
+    font-size: 1.5em;
+
+    background-color: var(--colour-accent);
+    border: 2px solid var(--colour-accent-bright);
+    
+    cursor: pointer;
+}
+
+/* ===== AUTHORS LIST ===== */
+#authors {
+    position: absolute;
+    width: 15vw;
+    bottom: 10vh;
+
+    flex-direction: column;
+
+    padding: 1vh;
+
+    background-color: var(--accent-dark);
+    border-radius: 20px;
+}
+
+#authors > p {
+    font-family: "JetBrains Mono", monospace;
+}

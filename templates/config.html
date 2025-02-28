@@ -4,7 +4,10 @@
         <!-- Metadata setup -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
+                
+        <!-- Title and icon -->
         <title>Lift Simulator</title>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
         
         <!-- Import CSS -->
         <link href="{{ url_for('static', filename='styles/style.css') }} " rel="stylesheet">
@@ -21,7 +24,7 @@
         </div>
 
         <div id="main" class="centers-items">
-            <form id="configForm" class="centers-items">
+            <form id="configForm" class="centers-items" method="post" action="{{ url_for('Config') }}">
                 <!-- Use Flask to automatically fill config items -->
                 {% for k, v in config_options.items(): %}
                     <div class="form-group">
@@ -29,11 +32,30 @@
                             <p class="literal-name">{{ k }}:</p>
                             <p class="pretty-name">{{ v[1] }}:</p>
                         </label>
-                        <input type="{{ v[0] }}" id="{{ k + 'Input' }}" value="{{ v[2] }}">
+                        <input type="{{ v[0] }}" id="{{ k + 'Input' }}" name="{{ k + 'Input' }}" value="{{ v[2] }}">
                     </div>
                 {% endfor %}
-        
-                <input type="submit" value="Submit">
+
+                <p class="info">
+                    Passengers waiting per floor:
+                    <br><i>(Enter comma-separated numbers)</i>
+                </p>
+
+                <!-- Input for those waiting per floor -->
+                <!-- Depends on the number of floors, dynamically created with JS -->
+                <div id="floorInputs">
+                    {% for i in range(config_options["numFloors"][2]): %}
+                        <div class="form-group floor-input">
+                            <label for="floor{{ i + 1 }}Input">
+                                <p class="pretty-name">Waiting on Floor {{ i + 1 }}:</p>
+                                <p class="literal-name">floor{{ i + 1 }}waiting:</p>
+                            </label>
+                            <input type="text" id="floor{{ i + 1 }}Input" name="floor{{ i + 1 }}Input" placeholder="Waiting...">
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <input type="submit" value="Submit" formaction="{{ url_for('Config') }}" formmethod="post">
 
                 <!-- Checkbox to toggle literal variable names on/off -->
                 <div class="form-group">

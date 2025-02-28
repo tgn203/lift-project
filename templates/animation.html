@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Metadata setup -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        
+        <!-- Title and icon -->
+        <title>Lift Simulator</title>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        
+        <!-- Import CSS -->
+        <link href="{{ url_for('static', filename='styles/style.css') }} " rel="stylesheet">
+        <link href="{{ url_for('static', filename='styles/animation.css') }}" rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- Title banner -->
+        <div class="banner">
+            <h1 class="title">Lift Algorithm Simulator</h1>
+            <button id="gh-button" onclick="openGithub()">
+                <img src="{{ url_for('static', filename='images/github_dark.svg') }}" alt="GitHub logo">
+            </button>
+        </div>
+
+        <div id="main" class="centers-items">
+            <!-- Building for the animation -->
+             <div class="building">
+                <div class="shaft" id="shaft">
+                    <div id="elevator" class="elevator">
+                        <p class="capacity-text" id="capacity-text">0/{{ config["capacity"] }}</p>
+                    </div>
+                </div>
+
+                <div class="floors-container">
+                    {% for i in range(config["num_floors"]) %}
+                        <div class="floor" id="floor{{ i + 1 }}">
+                            <div class="floor-label centers-items">
+                                <p class="floor-label-text">{{ i + 1 }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="extra-floors-container floors-container" id="extra-floors-container">
+                    {% for i in range(config["num_floors"]) %}
+                        <div class="floor" id="extraFloor{{ i + 1 }}"></div>
+                    {% endfor %}
+                </div>
+             </div>
+        </div>
+        
+        <!-- Controls footer -->
+        <div class="footer centers-items">
+            <div class="control-container centers-items">
+                <button class="media-button centers-items" id="step-back-btn" onclick="stepBackward()">
+                    <img src="{{ url_for('static', filename='images/backward_dark.svg') }}" alt="Step backward" draggable="false">
+                </button>
+                <button class="media-button centers-items" id="start-stop-btn" onclick="playPauseAnimation()">
+                    <img src="{{ url_for('static', filename='images/play_dark.svg') }}" alt="Play" id="play-img" draggable="false">
+                    <img src="{{ url_for('static', filename='images/pause_dark.svg') }}" alt="Play" id="pause-img" draggable="false" style="display: none;">
+                </button>
+                <button class="media-button centers-items" id="step-forward-btn" onclick="stepForward()">
+                    <img src="{{ url_for('static', filename='images/forward_dark.svg') }}" alt="Step forward" draggable="false">
+                </button>
+            </div>
+        </div>
+    </body>
+
+    <!-- Import scripts -->
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/animation.js') }}"></script>
+</html>
