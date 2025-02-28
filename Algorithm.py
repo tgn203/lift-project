@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[69]:
+# In[1]:
 
 
 import os
@@ -126,7 +126,7 @@ def write_config_to_file(config: dict, filepath: str) -> None:
         raise Exception(f"An error occurred: \n\t{e}")
 
 
-# In[70]:
+# In[2]:
 
 
 def floorCheck(currentFloor, queuedFloors): # a simple check to see if the current floor is inside a list
@@ -137,7 +137,7 @@ def floorCheck(currentFloor, queuedFloors): # a simple check to see if the curre
     
 
 
-# In[71]:
+# In[3]:
 
 
 def pathing(currentFloor, queuedFloors): # compares the longest distance the elevator has to travel up, and the longest distance down, and chooses the shorter distance to travel in
@@ -167,7 +167,7 @@ def pathing(currentFloor, queuedFloors): # compares the longest distance the ele
     
 
 
-# In[72]:
+# In[4]:
 
 
 def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its destination from the original list this checks if it should keep going
@@ -184,7 +184,7 @@ def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its 
     
 
 
-# In[73]:
+# In[5]:
 
 
 def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the elevator has no one on it but there are people calling it
@@ -227,7 +227,7 @@ def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the
     
 
 
-# In[74]:
+# In[6]:
 
 
 # the Queue class here works using a basic python list and giving it custom methods that follow the rules of FIFO
@@ -255,32 +255,10 @@ class Queue:
     
 
 
-# In[75]:
-
-
-# config = load_config_from_file("config.json")
-
-
-# In[76]:
+# In[7]:
 
 
 waitingQueue = Queue()
-# floorLimits: list = [-5, 5]
-# requestDict: dict = {}
-# for i in range(floorLimits[0], floorLimits[1] + 1):
-#     requestDict[i] = []
-# requestDict[4].append(2) # these are test values to show how the program should work, however in practice I expect the dictionary to be made with something imported
-# requestDict[4].append(2)
-# requestDict[4].append(3)
-
-# requestDict[4].append(-4)
-# requestDict[5].append(0)
-# # requestDict[5].append(0)
-# # requestDict[5].append(0)
-
-# requestDict[1].append(4)
-# requestDict[-3].append(-2)
-# requestDict[-2].append(5)
 
 queuedFloors: list[int] = [] #queuedFloors would be the initial set of buttons pressed when someone gets on the elevator when the elvator has no other locations
 currentFloor: int = 0
@@ -340,7 +318,7 @@ for i in allFloors:
     requestDict[i] = []
 
 
-# In[77]:
+# In[8]:
 
 
 movements = 0
@@ -355,7 +333,7 @@ stopCheck: bool = True
 
 timeCheck: bool = False
 timeCount: int = 0
-timeLimit: int = 10
+timeLimit: int = heightCheck
 prior: str = "none"
 direction: str = "none"
 while True:
@@ -643,7 +621,7 @@ while True:
 
 
 
-# In[82]:
+# In[9]:
 
 
 returningDictionary = {"stops" : list(stops), "movements" : int(movements), "on" : list(stopEntered), "off" : list(stopLeft)}
