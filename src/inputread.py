@@ -80,6 +80,11 @@ def convert_config_txt_to_dict(text: str) -> dict[str, str]:
         # Seperate line into segments and remove spaces
         split = [_.strip() for _ in line.split(":")]
 
+        if len(split) != 2:
+            raise Exception(
+                'Please make sure each floor call is in the format "floor: calls"'
+            )
+
         # Add empty floors to dict
         if not split[1]:
             config["requests"][int(split[0])] = []
@@ -89,7 +94,7 @@ def convert_config_txt_to_dict(text: str) -> dict[str, str]:
             try:
                 requests = [int(_) for _ in split[1].split(", ")]
             except ValueError:
-                raise Exception("Please make sure each call is an integer")
+                raise Exception("Please make sure each call is an integer and seperated by commas")
             config["requests"][int(split[0])] = requests
 
     return config

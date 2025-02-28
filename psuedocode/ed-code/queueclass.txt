@@ -1,0 +1,11 @@
+class queue:
+    function new():
+        create an empty list to store items in the queue
+    function size():
+        return the length of the current queue
+    function addItem(item):
+        add the item to the end of the list
+    function checkNext():
+        get the first item in the list
+    function removeNext():
+        remove the first item in the list
