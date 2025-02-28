@@ -1,0 +1,8 @@
+function followup(current floor, backup queue, prior):
+    if prior is up:
+        if max of backup queue is greater than current floor:
+            return true
+    else:
+        if min of backup queue is less than current floor:
+            return true
+    return false

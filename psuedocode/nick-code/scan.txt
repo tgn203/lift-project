@@ -1,0 +1,18 @@
+set current floor to 1
+set direction to -1
+
+set the lift to an empty lift
+
+while there is any floor requests left or people in the lift:
+    set stopping to false
+    if the current floor is a request in the lift
+        set stopping to true
+        remove every request to stop at current floor from the lift
+    if there is any people waiting to get on the lift at the current floor and there is space on the lift:
+        set stopping to true
+    while there is any people waiting to get on the lift at the current floor and there is space on the lift:
+        add the first floor request at the current floor
+        remove the first floor request from the config
+    if the current floor is 1 or the current floor is the floor count
+        times the direciton by negative 1
+    if stopping is true

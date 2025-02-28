@@ -1,0 +1,24 @@
+function takeRequest(current floor, calls up, calls down):
+    set checkup and checkdown to true
+    if there are no calls up:
+        set checkdown to false
+    if there are no calls down:
+        set checkup to false
+
+    if checkup and checkdown is false:
+        return stop
+    else if checkup is false:
+        return down
+    else if checkdown is false:
+        return up
+    
+    set finalup and finaldown to the current floor
+    if the minimum of the calls up are less than the finalup:
+        set final up to the minimum of the calls up
+    set longest up call to the absolute difference between the current floor and the final up
+    if the maximum of the calls down are less than the finaldown:
+        set final down to the maximum of the calls down
+    set longest down call to the absolute difference between the current floor and the final down
+    if the longest call up is less than the longest call down:
+        return down
+    return up
