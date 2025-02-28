@@ -261,7 +261,7 @@ class Queue:
 waitingQueue = Queue()
 
 queuedFloors: list[int] = [] #queuedFloors would be the initial set of buttons pressed when someone gets on the elevator when the elvator has no other locations
-currentFloor: int = 0
+currentFloor: int = 1
 
 calledUp: list[int] = []
 calledDown: list[int] = []
