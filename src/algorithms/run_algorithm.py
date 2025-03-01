@@ -1,16 +1,28 @@
-import time
-import sys
 import json
 from pathlib import Path
+import sys
 
-# Add src directory to Python path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to Python path
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
 
-from algorithms.Algorithm import floorCheck, pathing, followup, takeRequest
+# Local import
+from algorithm import Algorithm, run_algorithm
+
+def calculate_theoretical_time(requests):
+    """Calculate time based on floor movements and passenger handling"""
+    time = 0
+    for start_floor, destinations in requests.items():
+        for dest in destinations:
+            # 3 seconds per floor moved
+            time += abs(int(start_floor) - dest) * 3
+            # 5 seconds for loading/unloading at each end
+            time += 10
+    return time
 
 def run_elevator_simulation():
     # Read the config file
-    config_path = Path(__file__).parent.parent.parent / 'config.json'
+    config_path = project_root / 'config.json'
     with open(config_path, 'r') as f:
         config = json.load(f)
     
@@ -18,37 +30,18 @@ def run_elevator_simulation():
     print(json.dumps(config, indent=2))
     print("\nStarting simulation...")
     
-    # Setup initial conditions
-    current_floor = 0
-    queued_floors = []
-    called_up = []
-    called_down = []
-    theoretical_time = 0  # Track theoretical time in seconds
+    # Calculate theoretical time
+    theoretical_time = calculate_theoretical_time(config['requests'])
     
-    # Parse requests from config
-    for floor, destinations in config['requests'].items():
-        floor = int(floor)
-        for dest in destinations:
-            if dest > floor:
-                called_up.append(floor)
-                theoretical_time += 3  # Loading time per passenger
-            else:
-                called_down.append(floor)
-                theoretical_time += 3  # Loading time per passenger
-            
-            # Add movement time to destination
-            theoretical_time += abs(dest - floor) * 3  # 3 seconds per floor movement
-            theoretical_time += 3  # Unloading time at destination
-    
-    # Run main algorithm loop
-    direction = takeRequest(current_floor, called_up, called_down)
-    print(f"Initial direction: {direction}")
+    # Run algorithm
+    result = run_algorithm(config['requests'], config.get('floors', 10))
     
     print(f"\nSimulation completed")
-    print(f"Total theoretical time: {theoretical_time} seconds ({theoretical_time/60:.1f} minutes)")
-    print(f"Final state - Floor: {current_floor}, Direction: {direction}")
-    print(f"Remaining calls up: {called_up}")
-    print(f"Remaining calls down: {called_down}")
+    # 3 seconds per floor movement, 5 seconds for each passenger loading/unloading
+    # Additional time for: Direction changes, Queue management, Multiple passengers at same floor
+    print(f"Theoretical run time: {result['total_time']} seconds ({result['total_time']/60:.1f} minutes)")
+    print(f"Final state - Floor: {result['final_floor']}, Direction: {result['direction']}")
+    print(f"Final weight: {result['weight']}")
 
 if __name__ == '__main__':
     run_elevator_simulation()

@@ -4,4 +4,7 @@ class Building:
         self.elevators = []
     
     def add_elevator(self, elevator):
-        self.elevators.append(elevator)
+        if elevator.total_floors == self.num_floors:
+            self.elevators.append(elevator)
+            return True
+        return False

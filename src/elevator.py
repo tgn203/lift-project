@@ -5,7 +5,6 @@ class Elevator:
         self.total_floors = total_floors
         self.passengers = []
         self.queued_floors = []
-        self.backup_queue = []
         self.direction = "stop"
         self.prior_direction = "none"
         self.weight_count = 0
@@ -63,23 +62,3 @@ class Elevator:
         if passenger in self.passengers:
             self.passengers.remove(passenger)
             self.weight_count -= 1
-
-    def move_up(self, args):
-        if len(args) != 1:
-            print("Usage: up <elevator_id>")
-            return
-        elevator_id = int(args[0])
-        elevator = self._get_elevator(elevator_id)
-        if elevator:
-            elevator.move()
-            print(f"Elevator {elevator_id} at floor {elevator.current_floor}")
-
-    def move_down(self, args):
-        if len(args) != 1:
-            print("Usage: down <elevator_id>")
-            return
-        elevator_id = int(args[0])
-        elevator = self._get_elevator(elevator_id)
-        if elevator:
-            elevator.move()
-            print(f"Elevator {elevator_id} at floor {elevator.current_floor}")
