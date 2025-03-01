@@ -227,38 +227,20 @@ def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the
     
 
 
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
 # In[6]:
 
-
-# the Queue class here works using a basic python list and giving it custom methods that follow the rules of FIFO
-class Queue: 
-
-    theQueue = [] 
-    # the constructor that makes the Queue
-    def __init__(self):
-        self.theQueue = []
-        
-    # returns the length of the list
-    def size(self):
-        return len(self.theQueue)
-        
-        # appends an item to the end of the list and only the end
-    def addItem(self, newItem):
-        self.theQueue.append(newItem)
-
-    # removes the oldest item from the list
-    def removeNext(self):
-        self.theQueue.pop(0)
-
-    def checkNext(self):
-        return self.theQueue[0]
-    
-
-
-# In[7]:
-
-
-waitingQueue = Queue()
 
 queuedFloors: list[int] = [] #queuedFloors would be the initial set of buttons pressed when someone gets on the elevator when the elvator has no other locations
 currentFloor: int = 1
@@ -279,10 +261,8 @@ for i in requestDict.keys():
     for k in requestDict[i]:
         if k < currentFloor:
             calledDown.append(i)
-            waitingQueue.addItem(i)
         else:
             calledUp.append(i)
-            waitingQueue.addItem(i)
 
 # these values determine how much the elevator can hold
 hardCapacity: int = config["capacity"] # hardCapacity is the limit at which no one else can get on the elevator or else the elevator stops and waits for others to get off
@@ -296,8 +276,9 @@ heightCheck: int = config["num_floors"]  # an easier variable to remember
 allFloors = calledDown + calledUp
 for i in requestDict.keys():
     allFloors.append(i)
-    allFloors.append(max(requestDict[i]))
-    allFloors.append(min(requestDict[i]))
+    if len(requestDict[i]) > 0:
+        allFloors.append(max(requestDict[i]))
+        allFloors.append(min(requestDict[i]))
 
 # makes sure the number of floors claimed to exist is equal or greater than the number of floors that exists in the dictionary
 if (max(allFloors) - min(allFloors) + 1) > heightCheck:
@@ -318,7 +299,7 @@ for i in allFloors:
     requestDict[i] = []
 
 
-# In[8]:
+# In[7]:
 
 
 movements = 0
@@ -331,9 +312,6 @@ weightDecrease: int = 0
 weightIncrease: int = 0
 stopCheck: bool = True
 
-timeCheck: bool = False
-timeCount: int = 0
-timeLimit: int = heightCheck
 prior: str = "none"
 direction: str = "none"
 while True:
@@ -341,7 +319,6 @@ while True:
     weightIncrease = 0
     
     stopCheck = True
-    timeCheck = False
     reset = False
     stopHere = floorCheck(currentFloor, queuedFloors) # checks if there any floors to stop at
     stopHereup = floorCheck(currentFloor, calledUp)
@@ -353,8 +330,6 @@ while True:
                     calledUp.remove(currentFloor)
                 for i in range(len(requestDict[currentFloor])):
                     queuedFloors.append(requestDict[currentFloor][0])
-                    waitingQueue.addItem(requestDict[currentFloor][0])
-                    # print(waitingQueue.size())
                     requestDict[currentFloor].pop(0)
                     weightCount = weightCount + 1
                     weightIncrease = weightIncrease + 1
@@ -367,8 +342,6 @@ while True:
                     calledDown.remove(currentFloor)
                 for i in range(len(requestDict[currentFloor])):
                     queuedFloors.append(requestDict[currentFloor][0])
-                    waitingQueue.addItem(requestDict[currentFloor][0])
-                    # print(waitingQueue.size())
                     requestDict[currentFloor].pop(0)
                     weightCount = weightCount + 1
                     weightIncrease = weightIncrease + 1
@@ -390,7 +363,6 @@ while True:
     
     if stopHere == True: # opens to let people off the elevator, but can't stop people from getting on if there are any
         if stopHere == True: # a redundant check that I'll remove
-            timeCheck = True
             y = 0 # counter in order to remove every entry of the current floor from the queuedFloors list
             for i in queuedFloors:
                 if currentFloor == i:
@@ -407,8 +379,6 @@ while True:
             while currentFloor in calledUp:
                 calledUp.remove(currentFloor)
             for i in range(len(requestDict[currentFloor])):
-                waitingQueue.addItem(requestDict[currentFloor][0])
-                # print(waitingQueue.size())
                 queuedFloors.append(requestDict[currentFloor][0])
                 requestDict[currentFloor].pop(0)
                 weightCount += 1
@@ -422,8 +392,6 @@ while True:
             while currentFloor in calledDown:
                 calledDown.remove(currentFloor)
             for i in range(len(requestDict[currentFloor])):
-                waitingQueue.addItem(requestDict[currentFloor][0])
-                # print(waitingQueue.size())
                 queuedFloors.append(requestDict[currentFloor][0])
                 requestDict[currentFloor].pop(0)
                 weightCount += 1
@@ -451,7 +419,6 @@ while True:
             print("Previous queued floors: ", queuedFloors)
         for i in range(weightDifference):
             goneDestination = queuedFloors[0]
-            waitingQueue.addItem(queuedFloors[0])
             queuedFloors.pop(0)
             if goneDestination > currentFloor:  # checks if the passenger was travelling up or down
                 calledUp.append(currentFloor)
@@ -468,30 +435,6 @@ while True:
         if debug:
             print("Passenger(s) left early due to overcrowding at floor:", currentFloor) # informs of a stop
             print("")
-
-    timeCount = timeCount + 1
-    for i in range(waitingQueue.size()):
-        if waitingQueue.checkNext in queuedFloors or waitingQueue.checkNext in calledUp or waitingQueue.checkNext in calledDown:
-            break;
-        else:
-            timeCount = 0
-            waitingQueue.removeNext()
-    if (timeCheck == True) and (timeCount > timeLimit):
-        if waitingQueue.checkNext > currentFloor:
-            direction = "up"
-            currentFloor = currentFloor + 1
-            prior = direction
-            if debug:
-                print("Current Floor =", currentFloor)
-            continue
-        else:
-            direction = "down"
-            currentFloor = currentFloor - 1
-            prior = direction
-            if debug:            
-                print("Current Floor =", currentFloor)
-            continue
-
             
 
     if len(calledUp) != 0 or len(calledDown) != 0: 
@@ -504,33 +447,16 @@ while True:
         reset = True
 
         if direction == "up":
-            destination = calledDown[0]
-            for i in calledDown:
-                if i > destination: # chooses the highest possible floor to travel too
-                    destination = i
-                if currentFloor > destination: # checks if the destination is above or below the current floor
-                    x = -1
-                else: 
-                    x = 1
+            destination = max(calledDown)
+            if currentFloor > destination: # checks if the destination is above or below the current floor
+                x = -1
+            else: 
+                x = 1
             while True:
                 if currentFloor == destination: # checks to see if the currentFloor is one floor away from destination
-                    destinationCheck = destination
-                    
-                    for p in calledDown: # checks to see if there are any new floors further away than the destination, I made it with the idea that there will be a way to take additional input
-                        if p > destinationCheck:
-                            destinationCheck = p
-                    if destinationCheck == destination: # if there are no further floors then the while True loop breaks
-                        direction = "down" # as the person called down, the elevator's next direction is down
-                        reset = True
-                        break
-                    else:
-                        destination = destinationCheck # sets the new destination if there's now a further one
-                        if currentFloor < destination:
-                            x = 1
-                        currentFloor = currentFloor + x
-                        if debug:
-                            print("Current Floor =", currentFloor)
-                        movements = movements + 1
+                    direction = "down" # as the person called down, the elevator's next direction is down
+                    reset = True
+                    break
                 else:
                     currentFloor = currentFloor + x # this will repeat until it reaches the correct floor
                     if debug:
@@ -539,35 +465,17 @@ while True:
 
 
         elif direction == "down": 
-            destination = calledUp[0]
-            for i in calledUp:
-                if i > destination:
-                    destination = i
-
-                if currentFloor < destination:
-                    x = 1
-                else: 
-                    x = -1
+            destination = min(calledUp)
+            if currentFloor < destination:
+                x = 1
+            else: 
+                x = -1
 
             while True:
                 if currentFloor == destination: # checks to see if the currentFloor is one floor away from destination
-                    destinationCheck = destination
-                    
-                    for i in calledUp: # checks to see if there are any new floors further away than the destination, I made it with the idea that there will be a way to take additional input
-                        if i > destinationCheck:
-                            destinationCheck = i
-                    if destinationCheck == destination: # if there are no further floors then the while True loop breaks
                         direction = "up"
                         reset = True
                         break
-                    else:
-                        destination = destinationCheck # sets the new destination if there's now a further one
-                        if currentFloor > destination:
-                            x = -1
-                        currentFloor = currentFloor + x
-                        if debug:
-                            print("Current Floor =", currentFloor)
-                        movements = movements + 1
                 else:
                     currentFloor = currentFloor + x
                     if debug:
@@ -621,16 +529,16 @@ while True:
 
 
 
-# In[9]:
+# In[8]:
 
 
 returningDictionary = {"stops" : list(stops), "movements" : int(movements), "on" : list(stopEntered), "off" : list(stopLeft)}
 
 
-# In[ ]:
+# In[9]:
 
 
-
+print(returningDictionary)
 
 
 # In[ ]:
