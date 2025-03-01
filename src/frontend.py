@@ -24,8 +24,10 @@ from typing import cast
 import secrets
 import logging
 import os
+from copy import deepcopy
 
 from inputread import load_config_from_file
+from algs.ed_algorithm import algorithm
 
 # Flask configuration variables
 FLASK_PORT = 8080
@@ -63,6 +65,8 @@ def Index() -> Response | str:
         # Add the config to session storage
         config = load_config_from_file(filepath)
         session["config"] = config
+
+        print(f"config = {session["config"]}")
 
         # Redirect to animation handled by JS in page.
 
@@ -125,16 +129,17 @@ def Animation() -> str | Response:
 def Data() -> Response:
     # Retrieve the config from session storage
 
-    # TODO: implement running the algorithm
-    # Example output:
+    config_copy = deepcopy(session["config"])
+    output = algorithm(session["config"])
 
     data = {
-        "config": session["config"],
-        "stops": [1, 2, 3, 4, 2, 1],
-        "movements": 4,
-        "on": [3, 1, 2, 1, 4, 1],
-        "off": [1, 2, 1, 4, 1, 2],
+        "stops": [0] + output["stops"],
+        "movements": output["movements"],
+        "on": output["on"],
+        "off": output["off"],
     }
+
+    data["config"] = config_copy
 
     return jsonify(data)
 
