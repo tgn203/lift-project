@@ -15,7 +15,7 @@ let animationInterval = null;   // Used to start and stop the animation with the
 
 // Translate the elevator div
 function moveElevator(floor) {  
-    elevator.style.transform = `translateY(${(floor - 1) * floorHeight}px)`;
+    elevator.style.transform = `translateY(-${(floor - 1) * floorHeight}px)`;
 }
 
 // Toggle if the animation is playing

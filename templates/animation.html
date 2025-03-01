@@ -34,9 +34,9 @@
 
                 <div class="floors-container">
                     {% for i in range(config["num_floors"]) %}
-                        <div class="floor" id="floor{{ i + 1 }}">
+                        <div class="floor" id="floor{{ config['num_floors'] - i }}">
                             <div class="floor-label centers-items">
-                                <p class="floor-label-text">{{ i + 1 }}</p>
+                                <p class="floor-label-text">{{ config["num_floors"] - i }}</p>
                             </div>
                         </div>
                     {% endfor %}
@@ -44,7 +44,7 @@
 
                 <div class="extra-floors-container floors-container" id="extra-floors-container">
                     {% for i in range(config["num_floors"]) %}
-                        <div class="floor" id="extraFloor{{ i + 1 }}"></div>
+                        <div class="floor" id="extraFloor{{ config['num_floors'] - i }}"></div>
                     {% endfor %}
                 </div>
              </div>

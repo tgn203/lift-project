@@ -65,10 +65,9 @@
     
     grid-column: 1;
 
-    display: grid;
-    grid-template-rows: auto;
+    position: relative;
 
-    padding: 4px;
+    /* padding: 4px; */
 
     background-color: none;
     border-top: 5px solid var(--bg-dark);
@@ -79,6 +78,10 @@
     width: 100%;
     height: auto;
     aspect-ratio: 1;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
 
     display: flex;
     align-items: center;
