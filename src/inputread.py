@@ -94,7 +94,9 @@ def convert_config_txt_to_dict(text: str) -> dict[str, str]:
             try:
                 requests = [int(_) for _ in split[1].split(", ")]
             except ValueError:
-                raise Exception("Please make sure each call is an integer and seperated by commas")
+                raise Exception(
+                    "Please make sure each call is an integer and seperated by commas"
+                )
             config["requests"][int(split[0])] = requests
 
     return config
@@ -161,8 +163,3 @@ def check_config(config: dict) -> None:
         for floor in config["requests"].values()
     ):
         raise Exception(f"Not all calls are between 1-{config["num_floors"]}")
-
-
-config: dict = load_config_from_file("test.txt")
-check_config(config)
-print(config)
