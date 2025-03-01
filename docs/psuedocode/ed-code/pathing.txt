@@ -1,0 +1,19 @@
+function pathing(current floor, queued floors):
+    set checkup and checkdown to false
+    get the first floor in queued floors and store it in current floor
+    while there another floor in queued floors not yet gone through:
+        if next floor in queued floors is greater than current floor:
+            set checkup to true
+        else if the next floor in queued floors is less than current floor:
+            set checkdown to true
+        if checkup and checkdown are false:
+            return stop
+        else if checkdown is false:
+            return up
+        else if checkup is false:
+            return down
+        store the absolute difference between the current floor and max of queued floors in distance up
+        store the absolute difference between the current floor and min of queued floors in distance down
+        if the distance up is less than the distance down:
+            return up
+        return down 

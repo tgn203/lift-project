@@ -1,0 +1,11 @@
+do:
+    call floor check and store it in floor check result
+    if floor check result true:
+        remove current floors from queued floors
+        print current floor
+    call pathing and store it in the pathing result
+    if pathing result is up:
+        increment current floor
+    else if pathing result is down:
+        decrement current floor
+while pathing result is not stop

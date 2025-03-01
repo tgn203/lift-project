@@ -1,0 +1,127 @@
+load the config from the file using the load_config_from_file function
+set hard capacity to 20
+set soft capacity to half of hard capacity
+set weight count to 0
+set prior to none
+set direction to none
+set weight decrease to 0
+set weight increase to 0
+set time count to 0
+create an empty queue using the queue class
+
+if the there are less more floors than the amount specified in the config file:
+    print that there is more floors that the specified amount
+    exit the program
+
+if there are any missing floors:
+    add the remaining missing floors to the config
+
+do:
+    set reset to false
+    set stop here to the result of floorcheck using current floor and queued floors
+    set stop here up to the result of floorcheck using current floor and calls up
+    set stop here down to the result of floorcheck using current floor and calls down
+    if (stop here up is true and direction is up or stop here down is true and direction is down) and weight count is less than soft capacity:
+        if stop here up is true:
+            remove current floor from the calls up
+            set stop here up to false
+        else:
+            remove current floor from the calls down
+            set stop here down to false
+        loop for the amount of people at the current floor:
+            add the floor requested of the first person to the queued floors
+            add the floor requested of the first person to the queue object
+            remove the floor request of the first person from queued floors
+            increment weight count
+            increment weight increase
+        output the current floor saying that the algorithm has stopped at this floor
+        output the new queued floors
+    
+    if stop here is true:
+        for any floors in queued floors that is equal to current floor:
+            increment weight count
+        remove all occurances of current floor queued floors
+        if stop here up is true:
+            remove the current floor from calls up
+        if stop here down is true:
+            remove the current floor from calls down
+        if stop here down is true or stop here up is true:
+            loop for the amount of people at the current floor:
+                add the floor requested of the first person to the queued floors
+                add the floor requested of the first person to the queue object
+                remove the floor request of the first person from queued floors
+                increment weight count
+                increment weight increase
+        output the current floor saying that the algorithm has stopped at this floor
+        output the new queued floors
+    
+    if weight count is greater than the hard capacity:
+        get the weight difference between weight count and the hard capacity
+        loop for the weight difference:
+            add the first queued floor to the queue object
+            if the first value in queued floors is greater than the current floor:
+                add the current floor to calls up
+            else:
+                add the current floor to calls down
+            drop the first value in queued floors off to the current floor
+            decrement weight count
+            increment weight decrease
+            remove the first value from queued floors
+    
+    timecount = timecount + 1
+    loop for the size of the queue object:
+        if the next item in the queue object is in queued floors or calls up or calls down:
+            break from the loop
+        else:
+            set time count to 0
+            remove the next item from the queue object
+        
+
+    if there is any calls up or down:
+        set call check to true
+    else:
+        set call check to false
+
+    if there are no queued floors and call check is true:
+        set the direction to the result of takerequest(current floor, calls up, calls down)
+        set reset to true
+        if direction is up:
+            set destination to the highest call down
+            if the destination is greater than the first call down:
+                set x to -1 
+            else:
+                set x to 1
+            while true:
+                if the current floor is the destination:
+                    set destination check to destination
+                    if there is any calls down that are greater than destination check, set destination check to it
+                    if destination check is destination:
+                        set the direction to down
+                        set reset to true
+                        break
+                    else:
+                        set destination to destination check
+                        if the current floor is lest than destination:
+                            set x to 1
+                        add x to current floor
+    
+    if reset is true:
+        set reset to false
+    else:
+        if there are no queued floors and there are no calls up or down:
+            break from the loop
+        if there are no queued floors and the prior direction was none
+            set the current direction using the pathing function with current floors and queuedfloors
+        else:
+            set direction to the pathing result
+        
+        if direction is up:
+            increment current floor
+            increment movements
+        else if direction is down:
+            decrement current floor
+            increment movements
+        else:
+            break from the loop
+        set prior to the current direction
+        print the current floor
