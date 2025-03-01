@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[6]:
 
 
 import os
@@ -126,7 +126,7 @@ def write_config_to_file(config: dict, filepath: str) -> None:
         raise Exception(f"An error occurred: \n\t{e}")
 
 
-# In[2]:
+# In[7]:
 
 
 def floorCheck(currentFloor, queuedFloors): # a simple check to see if the current floor is inside a list
@@ -137,7 +137,7 @@ def floorCheck(currentFloor, queuedFloors): # a simple check to see if the curre
     
 
 
-# In[3]:
+# In[8]:
 
 
 def pathing(currentFloor, queuedFloors): # compares the longest distance the elevator has to travel up, and the longest distance down, and chooses the shorter distance to travel in
@@ -167,7 +167,7 @@ def pathing(currentFloor, queuedFloors): # compares the longest distance the ele
     
 
 
-# In[4]:
+# In[9]:
 
 
 def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its destination from the original list this checks if it should keep going
@@ -184,7 +184,7 @@ def followup(currentFloor, backupQueue, prior): # Once the elevator reaches its 
     
 
 
-# In[5]:
+# In[10]:
 
 
 def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the elevator has no one on it but there are people calling it
@@ -227,23 +227,48 @@ def takeRequest(currentFloor, calledUp, calledDown): # this would be used if the
     
 
 
+# In[11]:
+
+
+# the Queue class here works using a basic python list and giving it custom methods that follow the rules of FIFO
+class Queue: 
+
+    theQueue = [] 
+    # the constructor that makes the Queue
+    def __init__(self):
+        self.theQueue = []
+        
+    # returns the length of the list
+    def size(self):
+        return len(self.theQueue)
+        
+        # appends an item to the end of the list and only the end
+    def addItem(self, newItem):
+        self.theQueue.append(newItem)
+
+    # removes the oldest item from the list
+    def removeNext(self):
+        self.theQueue.pop(0)
+
+    def checkNext(self):
+        return self.theQueue[0]
+    
+
+
 # In[ ]:
 
 
 
 
 
-# In[ ]:
+# In[12]:
 
 
-
-
-
-# In[6]:
+waitingQueue = Queue()
 
 
 queuedFloors: list[int] = [] #queuedFloors would be the initial set of buttons pressed when someone gets on the elevator when the elvator has no other locations
-currentFloor: int = 1
+currentFloor: int = 0
 
 calledUp: list[int] = []
 calledDown: list[int] = []
@@ -261,8 +286,11 @@ for i in requestDict.keys():
     for k in requestDict[i]:
         if k < currentFloor:
             calledDown.append(i)
+            waitingQueue.addItem(i)
         else:
             calledUp.append(i)
+            waitingQueue.addItem(i)
+
 
 # these values determine how much the elevator can hold
 hardCapacity: int = config["capacity"] # hardCapacity is the limit at which no one else can get on the elevator or else the elevator stops and waits for others to get off
@@ -299,7 +327,7 @@ for i in allFloors:
     requestDict[i] = []
 
 
-# In[7]:
+# In[13]:
 
 
 movements = 0
@@ -312,6 +340,9 @@ weightDecrease: int = 0
 weightIncrease: int = 0
 stopCheck: bool = True
 
+timeCheck: bool = False
+timeCount: int = 0
+timeLimit: int = heightCheck
 prior: str = "none"
 direction: str = "none"
 while True:
@@ -330,6 +361,7 @@ while True:
                     calledUp.remove(currentFloor)
                 for i in range(len(requestDict[currentFloor])):
                     queuedFloors.append(requestDict[currentFloor][0])
+                    waitingQueue.addItem(requestDict[currentFloor][0])
                     requestDict[currentFloor].pop(0)
                     weightCount = weightCount + 1
                     weightIncrease = weightIncrease + 1
@@ -342,6 +374,7 @@ while True:
                     calledDown.remove(currentFloor)
                 for i in range(len(requestDict[currentFloor])):
                     queuedFloors.append(requestDict[currentFloor][0])
+                    waitingQueue.addItem(requestDict[currentFloor][0])
                     requestDict[currentFloor].pop(0)
                     weightCount = weightCount + 1
                     weightIncrease = weightIncrease + 1
@@ -363,6 +396,7 @@ while True:
     
     if stopHere == True: # opens to let people off the elevator, but can't stop people from getting on if there are any
         if stopHere == True: # a redundant check that I'll remove
+            timeCheck = True
             y = 0 # counter in order to remove every entry of the current floor from the queuedFloors list
             for i in queuedFloors:
                 if currentFloor == i:
@@ -379,6 +413,7 @@ while True:
             while currentFloor in calledUp:
                 calledUp.remove(currentFloor)
             for i in range(len(requestDict[currentFloor])):
+                waitingQueue.addItem(requestDict[currentFloor][0])
                 queuedFloors.append(requestDict[currentFloor][0])
                 requestDict[currentFloor].pop(0)
                 weightCount += 1
@@ -392,6 +427,7 @@ while True:
             while currentFloor in calledDown:
                 calledDown.remove(currentFloor)
             for i in range(len(requestDict[currentFloor])):
+                waitingQueue.addItem(requestDict[currentFloor][0])
                 queuedFloors.append(requestDict[currentFloor][0])
                 requestDict[currentFloor].pop(0)
                 weightCount += 1
@@ -418,6 +454,7 @@ while True:
         if debug:
             print("Previous queued floors: ", queuedFloors)
         for i in range(weightDifference):
+            waitingQueue.addItem(currentFloor)
             goneDestination = queuedFloors[0]
             queuedFloors.pop(0)
             if goneDestination > currentFloor:  # checks if the passenger was travelling up or down
@@ -436,6 +473,32 @@ while True:
             print("Passenger(s) left early due to overcrowding at floor:", currentFloor) # informs of a stop
             print("")
             
+    timeCount = timeCount + 1
+    for i in range(waitingQueue.size()):
+        if waitingQueue.checkNext in queuedFloors or waitingQueue.checkNext in calledUp or waitingQueue.checkNext in calledDown:
+            break;
+        else:
+            timeCount = 0
+            waitingQueue.removeNext()
+    if ((timeCheck == True) and (timeCount > timeLimit)) and (waitingQueue.size() > 0):
+        if waitingQueue.checkNext() > currentFloor:
+            direction = "up"
+            currentFloor = currentFloor + 1
+            movements += 1
+            prior = direction
+            queuedFloors.append(waitingQueue.checkNext)
+            if debug:
+                print("Current Floor =", currentFloor)
+            continue
+        else:
+            direction = "down"
+            currentFloor = currentFloor - 1
+            movements += 1
+            prior = direction
+            queuedFloors.append(waitingQueue.checkNext)
+            if debug:            
+                print("Current Floor =", currentFloor)
+            continue
 
     if len(calledUp) != 0 or len(calledDown) != 0: 
         callCheck = True
@@ -529,16 +592,22 @@ while True:
 
 
 
-# In[8]:
+# In[14]:
 
 
 returningDictionary = {"stops" : list(stops), "movements" : int(movements), "on" : list(stopEntered), "off" : list(stopLeft)}
 
 
-# In[9]:
+# In[15]:
 
 
 print(returningDictionary)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
