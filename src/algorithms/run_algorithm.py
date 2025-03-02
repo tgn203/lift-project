@@ -37,9 +37,12 @@ def run_elevator_simulation():
     
     print(f"\nSimulation completed")
     print(f"Theoretical time: {theoretical_time} seconds ({theoretical_time/60:.1f} minutes)")
-    print(f"Actual time: {result['total_time']} seconds ({result['total_time']/60:.1f} minutes)")
     print(f"Final state - Floor: {result['final_floor']}, Direction: {result['direction']}")
     print(f"Final weight: {result['weight']}")
+    print("\nElevator Journey:")
+    print(f"Stops made: {result['stops']}")
+    print(f"Passengers boarding: {result['pickups']}")
+    print(f"Passengers exiting: {result['dropoffs']}")
 
 if __name__ == '__main__':
     run_elevator_simulation()

@@ -1,17 +1,20 @@
 class Algorithm:
     def __init__(self, config):
         # Set up initial elevator state from configuration file
-        self.total_floors = config.get('floors', 10)  # Total number of floors in building
-        self.CAPACITY = config.get('capacity', 20)    # Maximum number of passengers
-        self.current_floor = 1                        # Start at floor 1
-        self.queued_floors = []                       # List of floors to visit
-        self.direction = "none"                       # Current direction (up/down/none)
-        self.weight = 0                               # Current passenger weight
-        self.time_elapsed = 0                         # Total time taken
+        self.total_floors = config.get('num_floors', 10)
+        self.CAPACITY = config.get('capacity', 20)
+        self.current_floor = 1
+        self.queued_floors = []
+        self.direction = "none"
+        self.weight = 0
+        self.time_elapsed = 0
+        self.stop_history = []
+        self.pickups = []
+        self.dropoffs = []
 
     def floorCheck(self, floor):
-        # Check if we need to stop at this floor
-        return floor in self.queued_floors
+        # Convert both floor numbers to integers for comparison
+        return str(floor) in self.queued_floors
         
     def pathing(self):
         # Decide which direction to move
@@ -19,28 +22,29 @@ class Algorithm:
             return "none"  # No more floors to visit
             
         # Split requested floors into those above and below current floor
-        floors_above = [f for f in self.queued_floors if f > self.current_floor]
-        floors_below = [f for f in self.queued_floors if f < self.current_floor]
+        floors_above = [int(f) for f in self.queued_floors if int(f) > self.current_floor]
+        floors_below = [int(f) for f in self.queued_floors if int(f) < self.current_floor]
         
-        # Determine direction based on pending requests
         if not floors_above and not floors_below:
             return "none"
         elif not floors_above:
-            return "down"  # Only floors below
+            return "down"
         elif not floors_below:
-            return "up"    # Only floors above
+            return "up"
             
         # Calculate shortest path
-        up_dist = min(floors_above) - self.current_floor    # Distance to closest up floor
-        down_dist = self.current_floor - max(floors_below)  # Distance to closest down floor
-        return "up" if up_dist <= down_dist else "down"     # Choose shortest distance
+        up_dist = min(floors_above) - self.current_floor
+        down_dist = self.current_floor - max(floors_below)
+        return "up" if up_dist <= down_dist else "down"
 
     def move(self):
         # Handle current floor if it's in queue
         if self.floorCheck(self.current_floor):
-            self.queued_floors.remove(self.current_floor)
+            self.queued_floors.remove(str(self.current_floor))
+            self.stop_history.append(self.current_floor)
+            self.pickups.append(0)
+            self.dropoffs.append(0)
             print(f"Stopped at floor: {self.current_floor}")
-            print(f"New queued floors: {sorted(self.queued_floors)}")
             self.time_elapsed += 5  # 5 seconds for stop
             
         # Determine next movement
@@ -70,40 +74,40 @@ class Algorithm:
         print(f"weight (reduced) = {self.weight}")
 
 def run_algorithm(requests, config):
-    # Initialize elevator
     controller = Algorithm(config)
     
-    # Sort floors in numerical order
-    floor_numbers = [int(floor) for floor in requests.keys()]
-    floor_numbers.sort()
-    
-    # Process requests floor by floor
-    for floor in floor_numbers:
-        start_floor = str(floor)  # Convert back to string to match requests dict
-        destinations = requests[start_floor]
-        destinations.sort()  # Sort destinations for efficiency
+    # Process each request in order of floor number
+    for start_floor, destinations in sorted(requests.items(), key=lambda x: int(x[0])):
+        start_floor = int(start_floor)
+        destinations = sorted(destinations)  # Sort destinations for each floor
         
         for dest in destinations:
-            # Move to pickup floor if needed
+            # Go to pickup floor
             if start_floor != controller.current_floor:
-                controller.queued_floors.append(start_floor)
-                while controller.move():  # Keep moving until we reach pickup floor
+                controller.queued_floors.append(str(start_floor))
+                while controller.move():
                     pass
-                    
-            # Handle passenger if capacity allows
+
+            # Take passenger to destination if capacity allows
             if controller.weight < controller.CAPACITY:
-                controller.add_passenger()                    # Load passenger
-                controller.queued_floors.append(dest)         # Add destination
-                while controller.move():                      # Move to destination
+                if controller.stop_history and controller.stop_history[-1] == controller.current_floor:
+                    controller.pickups[-1] += 1
+                    controller.add_passenger()
+                
+                controller.queued_floors.append(str(dest))
+                while controller.move():
                     pass
-                controller.remove_passenger()                 # Unload passenger
-            else:
-                print(f"Warning: Skip passenger - At capacity ({controller.CAPACITY})")
-    
-    # Return final elevator state
+                
+                if controller.stop_history and controller.stop_history[-1] == controller.current_floor:
+                    controller.dropoffs[-1] += 1
+                    controller.remove_passenger()
+
     return {
         "final_floor": controller.current_floor,
         "direction": controller.direction,
         "weight": controller.weight,
-        "total_time": controller.time_elapsed
+        "total_time": controller.time_elapsed,
+        "stops": controller.stop_history,
+        "pickups": controller.pickups,
+        "dropoffs": controller.dropoffs
     }
