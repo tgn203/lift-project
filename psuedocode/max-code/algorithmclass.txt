@@ -1,0 +1,64 @@
+class algorithm:
+    function new(config):
+        set total floors to the number of floors in the config
+        set capacity to the capacity in the config
+        set the current floor to 1
+        set the queued floors to an empty list
+        set direction to none
+        set weight to 0
+        set time elapsed to 0
+        set stop history to an empty list
+        set pickups to an empty list
+        set dropoffs to an empty list
+    
+    function floorCheck(floor):
+        return true if floor is in queued floors, else return false
+
+    function pathing():
+        if there is no floors in queued floors:
+            return none
+        
+        store all floors above the current floor in floors above
+        store all floors below the current floor in floors below
+
+        if there and no floors above and below:
+            return "none"
+        else if there are no floors above:
+            return down
+        else if there are no floors below:
+            return up
+
+        set the up distance to the lowest floor up from the current floor
+        set the down distance to the highest floor down from the current floor
+        if the up distance is less or equal than the down distance:
+            return up
+        return down
+    
+    function move():
+        if floorCheck(current floor) is true:
+            remove the current floor from queued floors
+            add the current floor to the stop history
+            add 0 to the pickups
+            add 0 to the dropoffs
+            print that the algorithm is stopping at the current floor
+            add 5 to time elapsed
+
+        set the direction to the result of pathing()
+
+        if the direction is up and the current floor is less than the total floors:
+            increment current floor
+            add 3 to time elapsed
+            return true
+        else if direction is down and current floor is greater than 1:
+            decrement current floor
+            add 3 to the time elapsed
+            return true
+        return false
+
+    function add_passenger(weight = 1):
+        add weight to weight (as in the paramters weight to the objects weight)
+        add 5 to time elapsed
+    
+    function remove_passenger(weight = 1):
+        remove weight from weight (as in the paramters weight to the objects weight)
+        add 5 to time elapsed

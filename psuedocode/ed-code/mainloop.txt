@@ -93,7 +93,7 @@ do:
                 set x to 1
             while true:
                 if the current floor is the destination:
-                    set directiom to down
+                    set direction to down
                     set reset to true
                     break from loop
                 else:
