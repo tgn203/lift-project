@@ -87,24 +87,33 @@ do:
         set reset to true
         if direction is up:
             set destination to the highest call down
-            if the destination is greater than the first call down:
+            if the destination is lesser than the current floor:
                 set x to -1 
             else:
                 set x to 1
             while true:
                 if the current floor is the destination:
-                    set destination check to destination
-                    if there is any calls down that are greater than destination check, set destination check to it
-                    if destination check is destination:
-                        set the direction to down
+                    set directiom to down
+                    set reset to true
+                    break from loop
+                else:
+                    add x to current floor
+                    increment movements
+        else if direction is down:
+            set destination to the lowest call up
+                if the destination is greater than the current floor:
+                    set x to 1
+                else:
+                    set x to -1
+                while true:
+                    if the current floor is the destination:
+                        set direction to up
                         set reset to true
-                        break
+                        break from loop
                     else:
-                        set destination to destination check
-                        if the current floor is lest than destination:
-                            set x to 1
                         add x to current floor
-    
+                        increment movements
+        
     if reset is true:
         set reset to false
     else:
