@@ -33,13 +33,11 @@ def run_elevator_simulation():
     # Calculate theoretical time
     theoretical_time = calculate_theoretical_time(config['requests'])
     
-    # Run algorithm
-    result = run_algorithm(config['requests'], config.get('floors', 10))
+    result = run_algorithm(config['requests'], config)
     
     print(f"\nSimulation completed")
-    # 3 seconds per floor movement, 5 seconds for each passenger loading/unloading
-    # Additional time for: Direction changes, Queue management, Multiple passengers at same floor
-    print(f"Theoretical run time: {result['total_time']} seconds ({result['total_time']/60:.1f} minutes)")
+    print(f"Theoretical time: {theoretical_time} seconds ({theoretical_time/60:.1f} minutes)")
+    print(f"Actual time: {result['total_time']} seconds ({result['total_time']/60:.1f} minutes)")
     print(f"Final state - Floor: {result['final_floor']}, Direction: {result['direction']}")
     print(f"Final weight: {result['weight']}")
 
