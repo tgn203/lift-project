@@ -94,7 +94,9 @@ def convert_config_txt_to_dict(text: str) -> dict[str, str]:
             try:
                 requests = [int(_) for _ in split[1].split(", ")]
             except ValueError:
-                raise Exception("Please make sure each call is an integer and seperated by commas")
+                raise Exception(
+                    "Please make sure each call is an integer and seperated by commas"
+                )
             config["requests"][int(split[0])] = requests
 
     return config
@@ -138,17 +140,22 @@ def write_config_to_file(config: dict, filepath: str) -> None:
 
 
 def check_config(config: dict) -> None:
+    # creates a list of all the floors their should be
     allfloors: list[int] = [i for i in range(1, config["num_floors"] + 1)]
+    # checks if all floors are set, even if empty
     if not all(floor in list(config["requests"].keys()) for floor in allfloors):
         raise Exception(
             f"Not all floors are set, please make sure you have all floors 1-{config["num_floors"]} set"
         )
+    # checks if all floors are within the bounds as set by the number of floors
     if not all(floor in allfloors for floor in list(config["requests"].keys())):
         raise Exception(
             f"Not all floors are valid, please make sure you have all floors between 1-{config["num_floors"]}"
         )
+    # checks if all floors are in a list
     if not all(type(floor) == list for floor in list(config["requests"].values())):
         raise Exception(f"Not all floor calls are stored in a list")
+    # checks if all floors are integers
     if not all(
         all(type(value) == int for value in floor)
         for floor in config["requests"].values()
@@ -156,6 +163,7 @@ def check_config(config: dict) -> None:
         raise Exception(
             f"Not all calls are integers, make sure each value is an integer"
         )
+    # checks if all calls are for a valid floor
     if not all(
         all(value in allfloors for value in floor)
         for floor in config["requests"].values()
