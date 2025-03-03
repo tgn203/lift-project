@@ -159,7 +159,7 @@ def algorithm(config):
     # adds the floors that have call up requests and call down requests to their respective list
     for i in requestDict.keys():
         for k in requestDict[i]:
-            if k < currentFloor:
+            if k < i:
                 calledDown.append(i)
                 waitingQueue.addItem(i)
             else:
@@ -220,6 +220,8 @@ def algorithm(config):
     timeLimit: int = heightCheck
     prior: str = "none"
     direction: str = "none"
+    # print(calledUp)
+    # print(calledDown)
     while True:
         weightDecrease = 0
         weightIncrease = 0
@@ -231,30 +233,36 @@ def algorithm(config):
         stopHeredown = floorCheck(currentFloor,calledDown)
 
         if ((stopHereup == True and direction == "up") or (stopHeredown == True and direction == "down")) and weightCount < softCapacity: # the elevator won't stop to let new people on if it's at the softcap for weight
-                if stopHereup == True:
+                if (stopHereup == True and direction == "up"):
+                    reverseCount = 0 # prevents the list from going out of index
                     while currentFloor in calledUp:
                         calledUp.remove(currentFloor)
                     for i in range(len(requestDict[currentFloor])):
-                        queuedFloors.append(requestDict[currentFloor][0])
-                        waitingQueue.addItem(requestDict[currentFloor][0])
-                        requestDict[currentFloor].pop(0)
-                        weightCount = weightCount + 1
-                        weightIncrease = weightIncrease + 1
-                        if debug:
-                            print("weight (increased) =", weightCount) # keeps track of changes in weight
+                        if requestDict[currentFloor][(i - reverseCount)] >= currentFloor:
+                            queuedFloors.append(requestDict[currentFloor][i - reverseCount])
+                            waitingQueue.addItem(requestDict[currentFloor][i - reverseCount])
+                            requestDict[currentFloor].pop(i - reverseCount)
+                            weightCount = weightCount + 1
+                            weightIncrease = weightIncrease + 1
+                            reverseCount = reverseCount + 1
+                            if debug:
+                                print("weight (increased) =", weightCount) # keeps track of changes in weight
                     stopHereup = False
         
-                if stopHeredown == True:
+                if (stopHeredown == True and direction == "down"):
+                    reverseCount = 0
                     while currentFloor in calledDown:
                         calledDown.remove(currentFloor)
                     for i in range(len(requestDict[currentFloor])):
-                        queuedFloors.append(requestDict[currentFloor][0])
-                        waitingQueue.addItem(requestDict[currentFloor][0])
-                        requestDict[currentFloor].pop(0)
-                        weightCount = weightCount + 1
-                        weightIncrease = weightIncrease + 1
-                        if debug:
-                            print("weight (increased) =", weightCount) # keeps track of changes in weight
+                        if requestDict[currentFloor][(i - reverseCount)] <= currentFloor:
+                            queuedFloors.append(requestDict[currentFloor][i - reverseCount])
+                            waitingQueue.addItem(requestDict[currentFloor][i - reverseCount])
+                            requestDict[currentFloor].pop(i - reverseCount)
+                            weightCount = weightCount + 1
+                            weightIncrease = weightIncrease + 1
+                            reverseCount = reverseCount + 1
+                            if debug:
+                                print("weight (increased) =", weightCount) # keeps track of changes in weight
 
                     stopHeredown = False
 
@@ -284,32 +292,38 @@ def algorithm(config):
                 for i in range(y):
                     queuedFloors.remove(currentFloor)
                 
-            if stopHereup == True:
+            if (stopHereup == True and direction == "up"):
+                reverseCount = 0
                 while currentFloor in calledUp:
                     calledUp.remove(currentFloor)
                 for i in range(len(requestDict[currentFloor])):
-                    waitingQueue.addItem(requestDict[currentFloor][0])
-                    queuedFloors.append(requestDict[currentFloor][0])
-                    requestDict[currentFloor].pop(0)
-                    weightCount += 1
-                    weightIncrease = weightIncrease + 1
-                    if debug:
-                        print("weight (increased) =", weightCount) # keeps track of changes in weight
-                        print(requestDict[currentFloor])
+                    if requestDict[currentFloor][(i - reverseCount)] >= currentFloor:
+                        queuedFloors.append(requestDict[currentFloor][i - reverseCount])
+                        waitingQueue.addItem(requestDict[currentFloor][i - reverseCount])
+                        requestDict[currentFloor].pop(i - reverseCount)
+                        weightCount = weightCount + 1
+                        weightIncrease = weightIncrease + 1
+                        reverseCount = reverseCount + 1
+                        if debug:
+                            print("weight (increased) =", weightCount) # keeps track of changes in weight
+                            print(requestDict[currentFloor])
 
 
-            if stopHeredown == True:
+            if (stopHeredown == True and direction == "down"):
+                reverseCount = 0
                 while currentFloor in calledDown:
                     calledDown.remove(currentFloor)
                 for i in range(len(requestDict[currentFloor])):
-                    waitingQueue.addItem(requestDict[currentFloor][0])
-                    queuedFloors.append(requestDict[currentFloor][0])
-                    requestDict[currentFloor].pop(0)
-                    weightCount += 1
-                    weightIncrease = weightIncrease + 1
-                    if debug:
-                        print("weight (increased) =", weightCount) # keeps track of changes in weight
-                        print(requestDict[currentFloor])
+                    if requestDict[currentFloor][(i - reverseCount)] <= currentFloor:
+                        queuedFloors.append(requestDict[currentFloor][i - reverseCount])
+                        waitingQueue.addItem(requestDict[currentFloor][i - reverseCount])
+                        requestDict[currentFloor].pop(i - reverseCount)
+                        weightCount = weightCount + 1
+                        weightIncrease = weightIncrease + 1
+                        reverseCount = reverseCount + 1
+                        if debug:
+                            print("weight (increased) =", weightCount) # keeps track of changes in weight
+                            print(requestDict[currentFloor])
                     
             if stopCheck == True:
                 stops.append(currentFloor)
@@ -351,7 +365,7 @@ def algorithm(config):
         timeCount = timeCount + 1
         for i in range(waitingQueue.size()):
             if waitingQueue.checkNext in queuedFloors or waitingQueue.checkNext in calledUp or waitingQueue.checkNext in calledDown:
-                break;
+                break
             else:
                 timeCount = 0
                 waitingQueue.removeNext()
@@ -363,7 +377,7 @@ def algorithm(config):
                 prior = direction
                 queuedFloors.append(waitingQueue.checkNext)
                 if debug:
-                    print("Current Floor =", currentFloor)
+                    print("Dir Change Current Floor =", currentFloor)
                 continue
             else:
                 direction = "down"
@@ -372,7 +386,7 @@ def algorithm(config):
                 prior = direction
                 queuedFloors.append(waitingQueue.checkNext)
                 if debug:            
-                    print("Current Floor =", currentFloor)
+                    print("Dir change Current Floor =", currentFloor)
                 continue
 
         if len(calledUp) != 0 or len(calledDown) != 0: 
@@ -484,7 +498,3 @@ def algorithm(config):
 
 
     # In[ ]:
-
-
-
-

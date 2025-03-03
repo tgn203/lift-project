@@ -28,6 +28,7 @@ from copy import deepcopy
 
 from inputread import load_config_from_file
 from algs.ed_algorithm import algorithm as ed_algorithm
+from algs.ed_alternate_algorithm import algorithm as ed_alternate_algorithm
 from algs.max_algorithm import run_algorithm as max_algorithm
 from algs.look import algorithm as look_algorithm
 from algs.scan import algorithm as scan_algorithm
@@ -145,6 +146,7 @@ def Algorithm() -> str | Response:
     # Algorithms that can be chosen from
     ALG_OPTIONS = {
         "ed": "Ed's Algorithm",
+        "ed2": "Ed's Alternate Algorithm",
         "max": "Max's Algorithm",
         "scan": "SCAN Algorithm",
         "look": "LOOK Algorithm",
@@ -164,6 +166,15 @@ def Data() -> Response:
 
     if session["algorithm"] == "ed":
         output = ed_algorithm(session["config"])
+        data = {
+            "stops": [0] + output["stops"],
+            "movements": output["movements"],
+            "on": output["on"],
+            "off": output["off"],
+        }
+
+    if session["algorithm"] == "ed2":
+        output = ed_alternate_algorithm(session["config"])
         data = {
             "stops": [0] + output["stops"],
             "movements": output["movements"],
