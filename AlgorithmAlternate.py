@@ -345,8 +345,8 @@ timeCount: int = 0
 timeLimit: int = heightCheck
 prior: str = "none"
 direction: str = "none"
-print(calledUp)
-print(calledDown)
+# print(calledUp)
+# print(calledDown)
 while True:
     weightDecrease = 0
     weightIncrease = 0
