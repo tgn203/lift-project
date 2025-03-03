@@ -753,4 +753,57 @@ function run_algorithm(requests, config):
 \end{verbatim}
 
 
+\section{Data}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{graph.png}
+\end{figure}
+
+\begin{verbatim}
+	stops,	standard deviation,	distance travelled
+max:	29.063,	3.589629762,	145.021
+look:	18.6,	3.765871551,	39.534
+scan:	18.514,	3.785975181,	35.647
+edward normal:	17.357,	3.663753013,	45.337
+edward alternate:	18.312,	3.665669621,	30.176
+\end{verbatim}
+
+
+(it would not let me insert the graph at the end)
+
+
+\section{AI Declaration}
+
+
+\begin{verbatim}
+
+AI-supported/AI-integrated use is permitted in this assessment. We acknowledge the following uses of GenAI tools in this assessment:
+
+- [NO] I have used GenAI tools for developing ideas.
+- [NO] I have used GenAI tools to assist with research or gathering information.
+- [NO] I have used GenAI tools to help me understand key theories and concepts.
+- [NO] I have used GenAI tools to identify trends and themes as part of my data analysis.
+- [NO] I have used GenAI tools to suggest a plan or structure for my assessment.
+- [NO] I have used GenAI tools to give me feedback on a draft.
+- [NO] I have used GenAI tool to generate image, figures or diagrams.
+- [NO] I have used GenAI tools to proofread and correct grammar or spelling errors.
+- [NO] I have used GenAI tools to generate citations or references.
+- [NO] Other: [please specify]
+- [YES] I have not used any GenAI tools in preparing this assessment.
+
+We declare that we have referenced use of GenAI outputs within our assessment in line with the University
+referencing guidelines.
+
+Thomas Noakes
+Edward Dancey
+Maximilien Read
+Nick Woods
+
+03/03/2025
+
+
+\end{verbatim}
+
 \end{document}
