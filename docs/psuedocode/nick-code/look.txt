@@ -19,7 +19,13 @@ while there is any floor requests left or people in the lift:
         add the first floor request at the current floor
         remove the first floor request from the config
     if the current floor is 1 or the current floor is the floor count
-        times the direction by negative 1
+        times the direciton by negative 1
+    
+    if all calls in the lift are less than the current floor and there are people in the lift:
+        set direction to -1
+    else if all calls in the lift are greater than the current floor and there are people in the lift:
+        set direction to 1
+
     if stopping is true:
         add the current floors to the stops
         add a tuple of (last stop, current floor) to the movement list

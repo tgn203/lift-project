@@ -1,0 +1,25 @@
+function run_algorithm(requests, config):
+    create an algorithm object with the config and store it in controller
+
+    loop through each start floor and destinations in the storted requests:
+        loop through each destination in destinations:
+        if the start floor is not the same as the controller's current floor:
+            add the start floor to the controller's queued floors
+            while controller.move() returns true:
+                pass
+
+        if the controller's weight is less than the controller's capacity:
+            if the controller stop history has an item and the last controllers stop history is the current floors
+                increment the last controller's pickups 
+                call add_passenger from controller's
+            
+            add the destination to the queued floors in controller
+
+            while controller.move() returns true:
+                pass
+            
+            if the controller stop history has an item and the last controllers stop history is the current floors
+                increment the last controller's pickups 
+                call remove_passenger from controller's
+
+        return info for debugging
