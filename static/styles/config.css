@@ -14,6 +14,10 @@ form {
     border-radius: 30px;
 }
 
+form > h1 {
+    margin-bottom: 3vh;
+}
+
 .form-group {
     /* Flexboxes to position inputs with their labels */
     display: flex;

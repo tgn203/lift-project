@@ -22,7 +22,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
     .then(response => response.text())
     .then(data => {
         // Redirect to the animation page
-        window.location.href = "/animation";
+        window.location.href = "/algorithm";
     })
     .catch(error => console.error("Error: ", error));
 });

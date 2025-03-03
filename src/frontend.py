@@ -27,7 +27,10 @@ import os
 from copy import deepcopy
 
 from inputread import load_config_from_file
-from algs.ed_algorithm import algorithm
+from algs.ed_algorithm import algorithm as ed_algorithm
+from algs.max_algorithm import run_algorithm as max_algorithm
+from algs.look import algorithm as look_algorithm
+from algs.scan import algorithm as scan_algorithm
 
 # Flask configuration variables
 FLASK_PORT = 8080
@@ -101,7 +104,7 @@ def Config() -> Response | str:
         # Add the config to the session storage
         session["config"] = config
 
-        return cast(Response, redirect(url_for("Animation")))
+        return cast(Response, redirect(url_for("Algorithm")))
 
     # A list of options and their formatting that is passed to the HTML
     # template. Format = {literalName: [type, prettyName, defaultValue]}
@@ -124,20 +127,78 @@ def Animation() -> str | Response:
     return cast(Response, redirect(url_for("Config")))
 
 
+@app.route("/algorithm", methods=["GET", "POST"])
+def Algorithm() -> str | Response:
+    # Ensure config is set up first
+    if "config" not in session.keys():
+        return cast(Response, redirect(url_for("Config")))
+
+    if request.method == "POST":
+        # Get value from form
+        algorithm = str(request.form.get("algorithm"))
+
+        # Values restricted by form, no need to check for errors
+        session["algorithm"] = algorithm
+
+        return cast(Response, redirect(url_for("Animation")))
+
+    # Algorithms that can be chosen from
+    ALG_OPTIONS = {
+        "ed": "Ed's Algorithm",
+        "max": "Max's Algorithm",
+        "scan": "SCAN Algorithm",
+        "look": "LOOK Algorithm",
+    }
+
+    return render_template("algorithm.html", alg_options=ALG_OPTIONS)
+
+
 # Return JSON data
 @app.route("/data", methods=["GET"])
 def Data() -> Response:
+    if "algorithm" not in session.keys():
+        return cast(Response, redirect(url_for("Algorithm")))
+
     # Retrieve the config from session storage
-
     config_copy = deepcopy(session["config"])
-    output = algorithm(session["config"])
 
-    data = {
-        "stops": [0] + output["stops"],
-        "movements": output["movements"],
-        "on": output["on"],
-        "off": output["off"],
-    }
+    if session["algorithm"] == "ed":
+        output = ed_algorithm(session["config"])
+        data = {
+            "stops": [0] + output["stops"],
+            "movements": output["movements"],
+            "on": output["on"],
+            "off": output["off"],
+        }
+
+    elif session["algorithm"] == "max":
+        output = max_algorithm(
+            session["config"]["requests"],
+            session["config"]
+        )
+        data = {
+            "stops": output["stops"],
+            "on": [1] + output["pickups"],
+            "off": [0] + output["dropoffs"],
+        }
+
+    elif session["algorithm"] == "scan":
+        output = scan_algorithm(session["config"])
+        data = {
+            "stops": output["stops"],
+            "movements": output["movements"],
+            "on": output["on"],
+            "off": output["off"],
+        }
+
+    elif session["algorithm"] == "look":
+        output = look_algorithm(session["config"])
+        data = {
+            "stops": output["stops"],
+            "movements": output["movements"],
+            "on": output["on"],
+            "off": output["off"],
+        }
 
     data["config"] = config_copy
 

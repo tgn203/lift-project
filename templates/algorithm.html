@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Metadata setup -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+                
+        <!-- Title and icon -->
+        <title>Lift Simulator</title>
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        
+        <!-- Import CSS -->
+        <link href="{{ url_for('static', filename='styles/style.css') }} " rel="stylesheet">
+        <link href="{{ url_for('static', filename='styles/config.css') }} " rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- Title banner -->
+        <div class="banner">
+            <h1 class="title">Lift Algorithm Simulator</h1>
+            <button id="gh-button" onclick="openGithub()">
+                <img src="{{ url_for('static', filename='images/github_dark.svg') }}" alt="GitHub logo">
+            </button>
+        </div>
+
+        <div id="main" class="centers-items">
+            <form id="configForm" class="centers-items" method="post" action="{{ url_for('Algorithm') }}">
+                <h1>Select an algorithm to use:</h1>
+                
+                <!-- Use Flask to automatically fill algorithm choices -->
+                {% for k, v in alg_options.items(): %}
+                    <div class="form-group">
+                        <label for="option">
+                            <p class="pretty-name">{{ v }}</p>
+                        </label>
+                        <input type="checkbox" name="algorithm" value="{{ k }}" onclick="toggleCheckbox(this)">
+                    </div>
+                {% endfor %}
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </body>
+
+    <!-- Import scripts -->
+    <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+
+    <!-- Checkbox function -->
+    <script>
+        // First one selected by default
+        checkboxes = document.querySelectorAll('input[type=checkbox]');
+        checkboxes[0].checked = true;
+
+        function toggleCheckbox(checkbox) {
+            checkboxes = document.querySelectorAll('input[type=checkbox]');
+            checkboxes.forEach(cb => {
+                if (cb !== checkbox) {
+                    cb.checked = false
+                };
+            });
+        }
+    </script>
+</html>
