@@ -1,3 +1,0 @@
-line 118-127, 67-72 and 53-57, just use max and min instead of loop, also could just keep track through code instead of having to check each time
-general, why not have direction be -1 for down, 1 for up and 0 for stop
-lines 153-158 and lines 160-165, 

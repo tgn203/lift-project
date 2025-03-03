@@ -26,10 +26,10 @@ do:
     set stop here up to the result of floorcheck using current floor and calls up
     set stop here down to the result of floorcheck using current floor and calls down
     if (stop here up is true and direction is up or stop here down is true and direction is down) and weight count is less than soft capacity:
-        if stop here up is true:
+        if stop here up is true and direction is up:
             remove current floor from the calls up
             set stop here up to false
-        else:
+        else if stop here down and direction is down:
             remove current floor from the calls down
             set stop here down to false
         loop for the amount of people at the current floor:
